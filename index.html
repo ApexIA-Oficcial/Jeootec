@@ -1,351 +1,344 @@
-<!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEOOTEC - Formação Profissional em Softwares de Gestão</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        :root { --primary-blue: #0056b3; --dark-blue: #0a192f; }
-        .gradient-bg { background: linear-gradient(135deg, #0a192f 0%, #0056b3 100%); }
-        .card-hover:hover { transform: translateY(-5px); transition: 0.3s; }
-    </style>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans" x-data="jeootecApp()">
+<!-- HEADER/NAV -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <!-- LOGO DA EMPRESA -->
+            <img src="logo.png" alt="JEOOTEC Logo" class="h-12">
+        </div>
+        <div class="hidden md:flex space-x-8 font-semibold">
+            <a href="#home" class="hover:text-blue-600">Início</a>
+            <a href="#cursos" class="hover:text-blue-600">Formações</a>
+            <a href="#" @click="view = 'aluno'" class="hover:text-blue-600">Área do Aluno</a>
+            <a href="#" @click="acessoAdmin()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Painel Admin</a>
+        </div>
+    </div>
+</nav>
 
-    <!-- HEADER/NAV -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <!-- LOGO PLACEHOLDER - Substitua pelo link da imagem do seu logo -->
-                <img src="https://i.ibb.co/LnmPZks/logo-jeootec.png" alt="JEOOTEC Logo" class="h-12">
+<!-- VISTA PRINCIPAL (SITE) -->
+<div x-show="view === 'site'">
+    
+    <!-- HERO SECTION COM IMAGEM TOPO.PNG -->
+    <section id="home" class="hero-custom text-white py-16 md:py-24">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    Domine Softwares de Gestão e Abra Portas para o Mercado de Trabalho!
+                </h1>
+                <p class="text-lg mb-8 text-blue-100">
+                    Aprenda a instalar, configurar e utilizar os softwares mais solicitados em Angola em apenas 2 dias. Ganhe uma habilidade que vende soluções e garante remuneração imediata.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#cursos" class="bg-white text-blue-900 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 uppercase transition">Ver Formações</a>
+                    <a href="https://wa.me/244953646352" class="bg-green-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-green-600 uppercase flex items-center transition">
+                        <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+                    </a>
+                </div>
+                <p class="mt-6 text-sm italic font-light text-blue-200">
+                    🎁 BÔNUS: Alunos destaque podem trabalhar na JEOOTEC ou serem recomendados para parceiros.
+                </p>
             </div>
-            <div class="hidden md:flex space-x-8 font-semibold">
-                <a href="#home" class="hover:text-blue-600">Início</a>
-                <a href="#cursos" class="hover:text-blue-600">Formações</a>
-                <a href="#" @click="view = 'aluno'" class="hover:text-blue-600">Área do Aluno</a>
-                <a href="#" @click="view = 'admin'" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Painel Admin</a>
+            <div class="md:w-1/2 flex justify-center">
+                <!-- FOTO DO MODELO DA EMPRESA -->
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-blue-400 opacity-20 rounded-full blur-xl"></div>
+                    <img src="perfil.png" alt="Especialista JEOOTEC" class="relative rounded-2xl shadow-2xl border-4 border-white/20 w-80 md:w-96">
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
-    <!-- VISTA PRINCIPAL (SITE) -->
-    <div x-show="view === 'site'">
+    <!-- SECÇÃO DE CURSOS -->
+    <section id="cursos" class="py-20 container mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Escolha a Formação Ideal para o Seu Futuro Profissional</h2>
+            <p class="text-gray-600">Cada software é utilizado por diferentes tipos de empresas. Escolha o módulo que mais se adequa aos seus objetivos profissionais ou inscreva-se no pacote completo para uma formação abrangente.</p>
+        </div>
+
+        <!-- GRID DE CARTÕES COM IMAGENS XD.PNG, NEGOMIL.PNG, PRIMAVERA.PNG -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <template x-for="curso in cursos" :key="curso.id">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover border border-gray-100">
+                    <div class="relative h-48 bg-gray-200">
+                        <img :src="curso.imagem" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span :class="getStatusClass(curso.estado)" class="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" x-text="curso.estado"></span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-blue-900" x-text="curso.nome"></h3>
+                        <p class="text-sm text-gray-600 mb-4 line-clamp-2" x-text="curso.descricao"></p>
+                        
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center text-sm"><i class="fa-solid fa-layer-group w-6 text-blue-500"></i> <span x-text="'Módulos: ' + curso.modulosDisponiveis"></span></div>
+                            <div class="flex items-center text-sm"><i class="fa-solid fa-clock w-6 text-blue-500"></i> <span x-text="curso.horario"></span></div>
+                            <div class="flex items-center text-sm"><i class="fa-solid fa-users w-6 text-blue-500"></i> <span x-text="'Vagas Restantes: ' + curso.vagas"></span></div>
+                            <div class="text-lg font-bold text-blue-600" x-text="curso.preco + ' Kz'"></div>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button @click="openDetails(curso)" class="flex-1 border border-blue-600 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-50 transition">Ver Detalhes</button>
+                            <button @click="openInscricao(curso)" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition">Inscrever-me</button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+</div>
+
+<!-- MODAL: DETALHES DO CURSO -->
+<div x-show="modalDetails" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-8 relative">
+        <button @click="modalDetails = false" class="absolute top-4 right-4 text-2xl">&times;</button>
+        <div x-if="selectedCurso">
+            <h2 class="text-3xl font-bold text-blue-900 mb-4" x-text="selectedCurso.nome"></h2>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-bold border-b mb-2">Objetivos</h4>
+                    <p class="text-sm text-gray-600">Dominar a instalação, configuração e uso prático do sistema para nível empresarial.</p>
+                    <h4 class="font-bold border-b mt-4 mb-2">O que será aprendido</h4>
+                    <ul class="text-sm text-gray-600 list-disc ml-4">
+                        <li>Lançamento de faturas</li>
+                        <li>Gestão de Stock</li>
+                        <li>Configuração de Impressoras</li>
+                        <li>Fecho de Caixa</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold border-b mb-2">Perfil Profissional</h4>
+                    <p class="text-sm text-gray-600">Operadores de Caixa, Contabilistas, Gestores de Stock, Técnicos de TI.</p>
+                    <h4 class="font-bold border-b mt-4 mb-2">Empresas que utilizam</h4>
+                    <p class="text-sm text-gray-600" x-text="selectedCurso.empresas"></p>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg flex items-center justify-between">
+                <div>
+                    <p class="text-xs uppercase font-bold text-blue-400">Certificação Profissional</p>
+                    <p class="font-semibold">Certificado JEOOTEC Incluído</p>
+                </div>
+                <i class="fa-solid fa-certificate text-3xl text-blue-600"></i>
+            </div>
+            <button @click="modalDetails = false; openInscricao(selectedCurso)" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-bold">GARANTIR MINHA VAGA AGORA</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: FORMULÁRIO DE INSCRIÇÃO -->
+<div x-show="modalInscricao" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+        <button @click="modalInscricao = false" class="absolute top-4 right-4 text-2xl">&times;</button>
         
-        <!-- HERO SECTION -->
-        <section id="home" class="gradient-bg text-white py-16 md:py-24">
-            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                        Domine Softwares de Gestão e Abra Portas para o Mercado de Trabalho!
-                    </h1>
-                    <p class="text-lg mb-8 text-blue-100">
-                        Aprenda a instalar, configurar e utilizar os softwares mais solicitados em Angola em apenas 2 dias. Ganhe uma habilidade que vende soluções e garante remuneração imediata.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#cursos" class="bg-white text-blue-900 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 uppercase transition">Ver Formações</a>
-                        <a href="https://wa.me/seunumeroaqui" class="bg-green-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-green-600 uppercase flex items-center transition">
-                            <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-                        </a>
-                    </div>
-                    <p class="mt-6 text-sm italic font-light text-blue-200">
-                        🎁 BÔNUS: Alunos destaque podem trabalhar na JEOOTEC ou serem recomendados para parceiros.
-                    </p>
+        <h2 class="text-2xl font-bold text-center mb-8 border-b pb-4">Formulário de Inscrição Profissional</h2>
+        
+        <form class="space-y-8" @submit.prevent="submitInscricao()">
+            <!-- DADOS PESSOAIS -->
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="md:col-span-3"><h3 class="font-bold text-blue-600 uppercase text-sm">1. Dados Pessoais</h3></div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold mb-1">Nome Completo</label>
+                    <input type="text" x-model="formData.nome" class="w-full border p-2 rounded" required>
                 </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <!-- FOTO DO MODELO/ROSTO DA EMPRESA -->
-                    <div class="relative">
-                        <div class="absolute -inset-4 bg-blue-400 opacity-20 rounded-full blur-xl"></div>
-                        <img src="https://i.ibb.co/3s7mYBy/model-jeootec.jpg" alt="Especialista JEOOTEC" class="relative rounded-2xl shadow-2xl border-4 border-white/20 w-80 md:w-96">
-                    </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">Data Nascimento</label>
+                    <input type="date" x-model="formData.nascimento" class="w-full border p-2 rounded">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">WhatsApp</label>
+                    <input type="tel" x-model="formData.whatsapp" class="w-full border p-2 rounded" placeholder="9xx xxx xxx" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold mb-1">E-mail</label>
+                    <input type="email" x-model="formData.email" class="w-full border p-2 rounded">
                 </div>
             </div>
-        </section>
 
-        <!-- SECÇÃO DE CURSOS -->
-        <section id="cursos" class="py-20 container mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Escolha a Formação Ideal para o Seu Futuro Profissional</h2>
-                <p class="text-gray-600">Cada software é utilizado por diferentes tipos de empresas. Escolha o módulo que mais se adequa aos seus objetivos profissionais ou inscreva-se no pacote completo para uma formação abrangente.</p>
+            <!-- DADOS PROFISSIONAIS -->
+            <div class="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                <div class="md:col-span-2"><h3 class="font-bold text-blue-600 uppercase text-sm">2. Situação Profissional</h3></div>
+                <select x-model="formData.situacao" class="border p-2 rounded">
+                    <option value="Desempregado">Desempregado</option>
+                    <option value="Empregado">Empregado</option>
+                    <option value="Estudante">Estudante</option>
+                    <option value="Empresário">Empresário</option>
+                </select>
+                <input type="text" x-model="formData.profissao" placeholder="Profissão Atual" class="border p-2 rounded">
             </div>
 
-            <!-- GRID DE CARTÕES -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <template x-for="curso in cursos" :key="curso.id">
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover border border-gray-100">
-                        <div class="relative h-48 bg-gray-200">
-                            <img :src="curso.imagem" class="w-full h-full object-cover">
-                            <div class="absolute top-4 right-4">
-                                <span :class="getStatusClass(curso.estado)" class="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" x-text="curso.estado"></span>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 text-blue-900" x-text="curso.nome"></h3>
-                            <p class="text-sm text-gray-600 mb-4 line-clamp-2" x-text="curso.descricao"></p>
-                            
-                            <div class="space-y-2 mb-6">
-                                <div class="flex items-center text-sm"><i class="fa-solid fa-layer-group w-6 text-blue-500"></i> <span x-text="'Módulos: ' + curso.modulosDisponiveis"></span></div>
-                                <div class="flex items-center text-sm"><i class="fa-solid fa-clock w-6 text-blue-500"></i> <span x-text="curso.horario"></span></div>
-                                <div class="flex items-center text-sm"><i class="fa-solid fa-users w-6 text-blue-500"></i> <span x-text="'Vagas Restantes: ' + curso.vagas"></span></div>
-                                <div class="text-lg font-bold text-blue-600" x-text="curso.preco + ' Kz'"></div>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <button @click="openDetails(curso)" class="flex-1 border border-blue-600 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-50 transition">Ver Detalhes</button>
-                                <button @click="openInscricao(curso)" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition">Inscrever-me</button>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </section>
-    </div>
-
-    <!-- MODAL: DETALHES DO CURSO -->
-    <div x-show="modalDetails" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-8 relative">
-            <button @click="modalDetails = false" class="absolute top-4 right-4 text-2xl">&times;</button>
-            <div x-if="selectedCurso">
-                <h2 class="text-3xl font-bold text-blue-900 mb-4" x-text="selectedCurso.nome"></h2>
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h4 class="font-bold border-b mb-2">Objetivos</h4>
-                        <p class="text-sm text-gray-600">Dominar a instalação, configuração e uso prático do sistema para nível empresarial.</p>
-                        <h4 class="font-bold border-b mt-4 mb-2">O que será aprendido</h4>
-                        <ul class="text-sm text-gray-600 list-disc ml-4">
-                            <li>Lançamento de faturas</li>
-                            <li>Gestão de Stock</li>
-                            <li>Configuração de Impressoras</li>
-                            <li>Fecho de Caixa</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold border-b mb-2">Perfil Profissional</h4>
-                        <p class="text-sm text-gray-600">Operadores de Caixa, Contabilistas, Gestores de Stock, Técnicos de TI.</p>
-                        <h4 class="font-bold border-b mt-4 mb-2">Empresas que utilizam</h4>
-                        <p class="text-sm text-gray-600" x-text="selectedCurso.empresas"></p>
-                    </div>
+            <!-- DADOS DA FORMAÇÃO -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="md:col-span-2"><h3 class="font-bold text-blue-600 uppercase text-sm">3. Escolha da Formação</h3></div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">Software Selecionado</label>
+                    <input type="text" :value="selectedCurso.nome" readonly class="w-full bg-gray-100 border p-2 rounded font-bold text-blue-800">
                 </div>
-                <div class="bg-blue-50 p-4 rounded-lg flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase font-bold text-blue-400">Certificação Profissional</p>
-                        <p class="font-semibold">Certificado JEOOTEC Incluído</p>
-                    </div>
-                    <i class="fa-solid fa-certificate text-3xl text-blue-600"></i>
-                </div>
-                <button @click="modalDetails = false; openInscricao(selectedCurso)" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-bold">GARANTIR MINHA VAGA AGORA</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: FORMULÁRIO DE INSCRIÇÃO -->
-    <div x-show="modalInscricao" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
-            <button @click="modalInscricao = false" class="absolute top-4 right-4 text-2xl">&times;</button>
-            
-            <h2 class="text-2xl font-bold text-center mb-8 border-b pb-4">Formulário de Inscrição Profissional</h2>
-            
-            <form class="space-y-8" @submit.prevent="submitInscricao()">
-                <!-- DADOS PESSOAIS -->
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="md:col-span-3"><h3 class="font-bold text-blue-600 uppercase text-sm">1. Dados Pessoais</h3></div>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold mb-1">Nome Completo</label>
-                        <input type="text" class="w-full border p-2 rounded" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">Data Nascimento</label>
-                        <input type="date" class="w-full border p-2 rounded">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">WhatsApp</label>
-                        <input type="tel" class="w-full border p-2 rounded" placeholder="9xx xxx xxx">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold mb-1">E-mail</label>
-                        <input type="email" class="w-full border p-2 rounded">
-                    </div>
-                </div>
-
-                <!-- DADOS PROFISSIONAIS -->
-                <div class="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
-                    <div class="md:col-span-2"><h3 class="font-bold text-blue-600 uppercase text-sm">2. Situação Profissional</h3></div>
-                    <select class="border p-2 rounded">
-                        <option>Desempregado</option>
-                        <option>Empregado</option>
-                        <option>Estudante</option>
-                        <option>Empresário</option>
+                <div>
+                    <label class="block text-xs font-bold mb-1">Modalidade</label>
+                    <select x-model="formData.modalidade" class="w-full border p-2 rounded">
+                        <option value="Utilizador">Apenas Utilizador</option>
+                        <option value="Profissional">Formação Profissional Completa (Instalação + Configuração)</option>
                     </select>
-                    <input type="text" placeholder="Profissão Atual" class="border p-2 rounded">
                 </div>
+            </div>
 
-                <!-- DADOS DA FORMAÇÃO -->
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2"><h3 class="font-bold text-blue-600 uppercase text-sm">3. Escolha da Formação</h3></div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">Software Selecionado</label>
-                        <input type="text" :value="selectedCurso.nome" readonly class="w-full bg-gray-100 border p-2 rounded font-bold text-blue-800">
+            <!-- PAGAMENTO -->
+            <div class="border-2 border-dashed border-blue-200 p-6 rounded-xl bg-blue-50/50">
+                <h3 class="font-bold text-blue-600 uppercase text-sm mb-4">4. Pagamento e Confirmação</h3>
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-sm font-bold">IBAN para Transferência (BAI):</p>
+                        <p class="text-lg font-mono text-blue-800">AO06 0040 0000 1234 5678 1012 3</p>
+                        <p class="text-sm">Titular: JEOOTEC SOLUÇÕES</p>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1">Modalidade</label>
-                        <select class="w-full border p-2 rounded">
-                            <option>Apenas Utilizador</option>
-                            <option>Formação Profissional Completa (Instalação + Configuração)</option>
-                        </select>
+                    <div class="w-full md:w-64 text-center">
+                        <p class="text-xs font-bold text-blue-700 italic">O comprovativo deve ser enviado via WhatsApp após a inscrição.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- PAGAMENTO -->
-                <div class="border-2 border-dashed border-blue-200 p-6 rounded-xl bg-blue-50/50">
-                    <h3 class="font-bold text-blue-600 uppercase text-sm mb-4">4. Pagamento e Confirmação</h3>
-                    <div class="flex flex-col md:flex-row justify-between items-center">
-                        <div class="mb-4 md:mb-0">
-                            <p class="text-sm font-bold">IBAN para Transferência (BAI):</p>
-                            <p class="text-lg font-mono text-blue-800">AO06 0040 0000 1234 5678 1012 3</p>
-                            <p class="text-sm">Titular: JEOOTEC SOLUÇÕES</p>
-                        </div>
-                        <div class="w-full md:w-64">
-                            <label class="block text-xs font-bold mb-1">Anexar Comprovativo (PDF/JPG)</label>
-                            <input type="file" class="w-full text-xs" required>
-                        </div>
-                    </div>
-                </div>
+            <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp"></i> FINALIZAR MINHA INSCRIÇÃO
+            </button>
+        </form>
+    </div>
+</div>
 
-                <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg">FINALIZAR MINHA INSCRIÇÃO</button>
-            </form>
+<!-- PAINEL ADMIN COM RESTRIÇÃO -->
+<div x-show="view === 'admin'" class="min-h-screen bg-gray-100 p-8">
+    <div class="flex justify-between mb-8">
+        <h1 class="text-2xl font-bold">Painel Administrativo JEOOTEC</h1>
+        <button @click="view = 'site'" class="text-blue-600 font-bold">Sair para o Site</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 text-white">
+        <div class="bg-blue-600 p-4 rounded-lg shadow">Total Inscritos: 45</div>
+        <div class="bg-green-600 p-4 rounded-lg shadow">Pagos: 32</div>
+        <div class="bg-yellow-600 p-4 rounded-lg shadow">Pendentes: 13</div>
+        <div class="bg-red-600 p-4 rounded-lg shadow">Turmas Cheias: 2</div>
+    </div>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-gray-200 uppercase text-xs">
+                <tr>
+                    <th class="p-4">Aluno</th>
+                    <th class="p-4">Curso</th>
+                    <th class="p-4">Estado</th>
+                    <th class="p-4">WhatsApp</th>
+                    <th class="p-4">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b">
+                    <td class="p-4">João Manuel</td>
+                    <td class="p-4">SOFTWARE XD</td>
+                    <td class="p-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pendente</span></td>
+                    <td class="p-4">9XX XXX XXX</td>
+                    <td class="p-4"><button class="bg-green-500 text-white px-3 py-1 rounded text-xs">Aprovar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- RODAPÉ -->
+<footer x-show="view === 'site'" class="bg-gray-900 text-white py-12 mt-20">
+    <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12">
+        <div>
+            <img src="logo.png" alt="Logo" class="h-10 mb-6">
+            <p class="text-gray-400">Transformando profissionais através da tecnologia. Líderes em formação de softwares de gestão em Angola.</p>
+        </div>
+        <div>
+            <h4 class="font-bold mb-4">Contactos</h4>
+            <p class="text-gray-400">Luanda, Angola</p>
+            <p class="text-gray-400">+244 953 646 352</p>
+            <p class="text-gray-400">jeootec@gmail.com</p>
+        </div>
+        <div>
+            <h4 class="font-bold mb-4">Redes Sociais</h4>
+            <div class="flex space-x-4 text-2xl">
+                <a href="#" class="hover:text-blue-500"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-pink-500"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/244953646352" class="hover:text-green-500"><i class="fab fa-whatsapp"></i></a>
+            </div>
         </div>
     </div>
-
-    <!-- PAINEL ADMIN (DEMO) -->
-    <div x-show="view === 'admin'" class="min-h-screen bg-gray-100 p-8">
-        <div class="flex justify-between mb-8">
-            <h1 class="text-2xl font-bold">Painel Administrativo JEOOTEC</h1>
-            <button @click="view = 'site'" class="text-blue-600">Sair para o Site</button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 text-white">
-            <div class="bg-blue-600 p-4 rounded-lg shadow">Total Inscritos: 45</div>
-            <div class="bg-green-600 p-4 rounded-lg shadow">Pagos: 32</div>
-            <div class="bg-yellow-600 p-4 rounded-lg shadow">Pendentes: 13</div>
-            <div class="bg-red-600 p-4 rounded-lg shadow">Turmas Cheias: 2</div>
-        </div>
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-gray-200 uppercase text-xs">
-                    <tr>
-                        <th class="p-4">Aluno</th>
-                        <th class="p-4">Curso</th>
-                        <th class="p-4">Estado</th>
-                        <th class="p-4">Comprovativo</th>
-                        <th class="p-4">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="border-b">
-                        <td class="p-4">João Manuel</td>
-                        <td class="p-4">SOFTWARE XD</td>
-                        <td class="p-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pendente</span></td>
-                        <td class="p-4 text-blue-600 underline cursor-pointer">Ver_doc_001.jpg</td>
-                        <td class="p-4"><button class="bg-green-500 text-white px-3 py-1 rounded text-xs">Aprovar</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="text-center mt-12 pt-8 border-t border-gray-800 text-gray-500 text-sm">
+        &copy; 2024 JEOOTEC - Soluções Tecnológicas. Todos os direitos reservados.
     </div>
+</footer>
 
-    <!-- RODAPÉ -->
-    <footer x-show="view === 'site'" class="bg-gray-900 text-white py-12 mt-20">
-        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12">
-            <div>
-                <img src="https://i.ibb.co/LnmPZks/logo-jeootec.png" alt="Logo" class="h-10 mb-6 brightness-200">
-                <p class="text-gray-400">Transformando profissionais através da tecnologia. Líderes em formação de softwares de gestão em Angola.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4">Contactos</h4>
-                <p class="text-gray-400">Luanda, Angola</p>
-                <p class="text-gray-400">+244 9xx xxx xxx</p>
-                <p class="text-gray-400">info@jeootec.ao</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4">Redes Sociais</h4>
-                <div class="flex space-x-4 text-2xl">
-                    <a href="#" class="hover:text-blue-500"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="hover:text-pink-500"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-12 pt-8 border-t border-gray-800 text-gray-500 text-sm">
-            &copy; 2024 JEOOTEC - Soluções Tecnológicas. Todos os direitos reservados.
-        </div>
-    </footer>
-
-    <script>
-        function jeootecApp() {
-            return {
-                view: 'site',
-                modalDetails: false,
-                modalInscricao: false,
-                selectedCurso: {},
-                cursos: [
-                    {
-                        id: 1,
-                        nome: 'SOFTWARE XD',
-                        imagem: 'https://images.unsplash.com/photo-1556742049-13d736c7a91d?auto=format&fit=crop&q=80&w=400',
-                        descricao: 'Software utilizado por empresas dos sectores de restauração, comércio e oficinas. Controle vendas e faturação.',
-                        modulosDisponiveis: 'Restauração, Faturação, Oficina',
-                        preco: '25.000',
-                        vagas: 8,
-                        horario: 'Manhã (09h - 13h)',
-                        estado: '✓ Inscrições Abertas',
-                        empresas: 'Restaurantes, Lojas de Retalho, Oficinas de Automóveis.'
-                    },
-                    {
-                        id: 2,
-                        nome: 'SOFTWARE NEGOMIL',
-                        imagem: 'https://images.unsplash.com/photo-1556740734-7f1a62791f05?auto=format&fit=crop&q=80&w=400',
-                        descricao: 'Solução moderna para gestão de vendas, faturação e controlo operacional hoteleiro.',
-                        modulosDisponiveis: 'Restauração, Faturação, Hoteleiro',
-                        preco: '30.000',
-                        vagas: 5,
-                        horario: 'Tarde (14h - 18h)',
-                        estado: '✓ Últimas Vagas',
-                        empresas: 'Hotéis, Resorts, Pensões, Grandes Restaurantes.'
-                    },
-                    {
-                        id: 3,
-                        nome: 'SOFTWARE PRIMAVERA',
-                        imagem: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=400',
-                        descricao: 'Líder de mercado em gestão financeira, recursos humanos e contabilidade.',
-                        modulosDisponiveis: 'Contabilidade, RH, Faturação',
-                        preco: '45.000',
-                        vagas: 12,
-                        horario: 'Sábados Intensivo',
-                        estado: '✓ Nova Turma em Breve',
-                        empresas: 'Grandes Empresas, Escritórios de Contabilidade, Bancos.'
-                    }
-                ],
-                openDetails(curso) {
-                    this.selectedCurso = curso;
-                    this.modalDetails = true;
+<script>
+    function jeootecApp() {
+        return {
+            view: 'site',
+            modalDetails: false,
+            modalInscricao: false,
+            selectedCurso: {},
+            formData: { nome: '', whatsapp: '', email: '', situacao: 'Desempregado', profissao: '', modalidade: 'Utilizador' },
+            cursos: [
+                {
+                    id: 1,
+                    nome: 'SOFTWARE XD',
+                    imagem: 'xd.png',
+                    descricao: 'Software utilizado por empresas dos sectores de restauração, comércio e oficinas. Controle vendas e faturação.',
+                    modulosDisponiveis: 'Restauração, Faturação, Oficina',
+                    preco: '25.000',
+                    vagas: 8,
+                    horario: 'Manhã (09h - 13h)',
+                    estado: '✓ Inscrições Abertas',
+                    empresas: 'Restaurantes, Lojas de Retalho, Oficinas de Automóveis.'
                 },
-                openInscricao(curso) {
-                    this.selectedCurso = curso;
-                    this.modalInscricao = true;
+                {
+                    id: 2,
+                    nome: 'SOFTWARE NEGOMIL',
+                    imagem: 'negomil.png',
+                    descricao: 'Solução moderna para gestão de vendas, faturação e controlo operacional hoteleiro.',
+                    modulosDisponiveis: 'Restauração, Faturação, Hoteleiro',
+                    preco: '30.000',
+                    vagas: 5,
+                    horario: 'Tarde (14h - 18h)',
+                    estado: '✓ Últimas Vagas',
+                    empresas: 'Hotéis, Resorts, Pensões, Grandes Restaurantes.'
                 },
-                getStatusClass(estado) {
-                    if (estado.includes('Abertas')) return 'bg-green-600';
-                    if (estado.includes('Vagas')) return 'bg-orange-500';
-                    if (estado.includes('Breve')) return 'bg-blue-500';
-                    return 'bg-red-600';
-                },
-                submitInscricao() {
-                    alert('Obrigado! Sua inscrição foi enviada. O administrador da JEOOTEC validará o comprovativo em breve.');
-                    this.modalInscricao = false;
+                {
+                    id: 3,
+                    nome: 'SOFTWARE PRIMAVERA',
+                    imagem: 'primavera.png',
+                    descricao: 'Líder de mercado em gestão financeira, recursos humanos e contabilidade.',
+                    modulosDisponiveis: 'Contabilidade, RH, Faturação',
+                    preco: '45.000',
+                    vagas: 12,
+                    horario: 'Sábados Intensivo',
+                    estado: '✓ Nova Turma em Breve',
+                    empresas: 'Grandes Empresas, Escritórios de Contabilidade, Bancos.'
                 }
+            ],
+            // FUNÇÃO PARA RESTRINGIR O ADMIN COM SENHA
+            acessoAdmin() {
+                let senha = prompt("Introduza a senha de Administrador:");
+                if (senha === "jeootec2024") {
+                    this.view = 'admin';
+                } else {
+                    alert("Senha incorreta!");
+                }
+            },
+            openDetails(curso) {
+                this.selectedCurso = curso;
+                this.modalDetails = true;
+            },
+            openInscricao(curso) {
+                this.selectedCurso = curso;
+                this.modalInscricao = true;
+            },
+            getStatusClass(estado) {
+                if (estado.includes('Abertas')) return 'bg-green-600';
+                if (estado.includes('Vagas')) return 'bg-orange-500';
+                if (estado.includes('Breve')) return 'bg-blue-500';
+                return 'bg-red-600';
+            },
+            submitInscricao() {
+                const msg = `Olá JEOOTEC! 🚀%0A*NOVA INSCRIÇÃO*%0A--------------------------%0A*Nome:* ${this.formData.nome}%0A*Curso:* ${this.selectedCurso.nome}%0A*WhatsApp:* ${this.formData.whatsapp}%0A*Modalidade:* ${this.formData.modalidade}%0A--------------------------%0AEnvio aqui o meu interesse para a vaga.`;
+                window.open(`https://api.whatsapp.com/send?phone=244953646352&text=${msg}`, '_blank');
+                this.modalInscricao = false;
             }
         }
-    </script>
-</body>
-</html>
+    }
+</script>
