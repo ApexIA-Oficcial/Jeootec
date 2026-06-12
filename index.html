@@ -1,1214 +1,820 @@
 <!DOCTYPE html>
-<html lang="pt-AO">
+<html lang="pt-pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JEOOTEC | Formação e Softwares de Faturação em Angola</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Premium Fonts from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">>
-  
-  <!-- Lucide Icons Web CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- Production React & ReactDOM via CDN (For fast loading) -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- Babel Standalone for in-browser JSX support -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEOOTEC - Formação Profissional em Softwares de Gestão</title>
+    
+    <!-- Tailind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine JS CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        :root { --primary-blue: #0056b3; --dark-blue: #0a192f; }
+        .gradient-bg { background: linear-gradient(135deg, #0a192f 0%, #0056b3 100%); }
+        .hero-custom { 
+            background-image: linear-gradient(rgba(10, 25, 47, 0.85), rgba(10, 25, 47, 0.85)), url('topo2.png'); 
+            background-size: cover; 
+            background-position: center; 
+        }
+        .card-hover:hover { transform: translateY(-5px); transition: 0.3s; }
+        /* Garante que as imagens dos softwares não sejam cortadas */
+        .img-software { object-fit: contain; padding: 1rem; background: #f8fafc; }
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .font-display {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    /* Simple CSS animations for smooth UI experience */
-    .fade-enter {
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-    .slide-enter {
-      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  </style>
+        /* New Neon Glow Effects */
+        .neon-border-blue {
+            border: 2px solid #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.4), inset 0 0 5px rgba(0, 210, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .neon-border-blue:hover {
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.8), inset 0 0 10px rgba(0, 210, 255, 0.4);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+        }
+        .neon-glow-cyan-hover:hover {
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.8);
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 5px rgba(0, 210, 255, 0.6), 0 0 10px rgba(0, 210, 255, 0.4);
+        }
+        .neon-border-green {
+            border: 2px solid #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+        .neon-pulse-green {
+            animation: neonPulse 2s infinite alternate;
+        }
+        @keyframes neonPulse {
+            0% {
+                box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.9);
+            }
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
-  
-  <!-- React Mounting Root Element -->
-  <div id="root"></div>
+<body class="bg-gray-50 text-gray-800 font-sans" x-data="jeootecApp()" x-init="carregarInscritos(); iniciarNotificacoes()">
 
-  <!-- React & Babel Standalone Script Block -->
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+    <!-- HEADER/NAV -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="logo.png" alt="JEOOTEC Logo" class="h-12">
+            </div>
+            <div class="hidden md:flex space-x-8 font-semibold items-center">
+                <a href="#home" class="hover:text-blue-600">Início</a>
+                <a href="#cursos" class="hover:text-blue-600">Formações</a>
+                <a href="#" @click="acessoAdmin()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Painel Admin</a>
+            </div>
+            <!-- Menu Mobile Button -->
+            <div class="md:hidden">
+                <button @click="menuMobile = !menuMobile" class="text-blue-600 text-2xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <!-- Dropdown Mobile -->
+        <div x-show="menuMobile" class="md:hidden bg-white border-t p-4 flex flex-col space-y-4 font-semibold">
+            <a href="#home" @click="menuMobile = false">Início</a>
+            <a href="#cursos" @click="menuMobile = false">Formações</a>
+            <a href="#" @click="acessoAdmin(); menuMobile = false">Painel Admin</a>
+        </div>
+    </nav>
 
-    // Font Awesome/Lucide icon converter wrapper
-    const iconMap = {
-      Menu: 'menu',
-      X: 'x',
-      Layers: 'layers',
-      Clock: 'clock',
-      Users: 'users',
-      Shield: 'shield',
-      MessageSquare: 'message-square',
-      Send: 'send',
-      ChevronDown: 'chevron-down',
-      ChevronUp: 'chevron-up',
-      CheckCircle: 'check-circle',
-      Trash2: 'trash-2',
-      Calendar: 'calendar',
-      Award: 'award',
-      BookOpen: 'book-open',
-      Phone: 'phone',
-      MapPin: 'map-pin',
-      Eye: 'eye',
-      DollarSign: 'dollar-sign',
-      Check: 'check',
-      Plus: 'plus',
-      User: 'user',
-      Sparkles: 'sparkles'
-    };
-
-    const Icon = ({ name, className }) => {
-      const kebabName = iconMap[name] || name.toLowerCase();
-      useEffect(() => {
-        if (window.lucide) {
-          window.lucide.createIcons();
-        }
-      }, [kebabName]);
-      return <i data-lucide={kebabName} className={className} style={{ display: 'inline-flex', alignSelf: 'center' }}></i>;
-    };
-
-    const listNomesAngolanos = [
-      "João Manuel",
-      "José Sorte Francisco",
-      "Pedro António",
-      "Marta Domingos",
-      "Ana Paula Mateus",
-      "Carlos Manuel",
-      "Edna Sofia",
-      "Nelson Pedro",
-      "Domingos Joaquim",
-      "Maria da Conceição",
-      "Mateus Francisco",
-      "Elisa Bernardo",
-      "António Domingos",
-      "Patrícia Pedro",
-      "Celso Manuel"
-    ];
-
-    const faqsData = [
-      {
-        pergunta: "Como funcionam os cursos de softwares de faturação?",
-        resposta: "Os nossos cursos são 100% focados no ambiente de trabalho prático angolano. Aprenderá como realizar o licenciamento de softwares, configuração inicial de empresas, emissão de faturas/recibos, notas de crédito, relatórios fiscais, e parametrizações complexas exigidas pela AGT."
-      },
-      {
-        pergunta: "Como posso assegurar a minha inscrição e onde recebo o IBAN?",
-        resposta: "A inscrição inicial é feita diretamente aqui pelo site. Após preencher a ficha de inscrição correspondente ao curso, clique no botão para submeter e será direcionado para o nosso WhatsApp. O nosso IBAN oficial será transmitido e validado diretamente por lá para sua total segurança."
-      },
-      {
-        pergunta: "As formações oferecem certificado profissional?",
-        resposta: "Sim. Todos os alunos inscritos que concluírem as etapas e testes práticos com aproveitamento recebem um Certificado Profissional de Capacitação em Softwares de Gestão emitido pela JEOOTEC, altamente valorizado pelas empresas em Angola."
-      },
-      {
-        pergunta: "Quais as facilidades de pagamento aceites?",
-        resposta: "Aceitamos pagamentos por transferência bancária direta, depósitos ou Multicaixa Express. Em formações de maior duração ou na modalidade Profissional, o pagamento pode ser efetuado na confirmação para garantir a sua vaga na turma presencial."
-      },
-      {
-        pergunta: "Quais são as opções de horários e qual a carga horária?",
-        resposta: "Temos turmas flexíveis no período da Manhã (09h - 13h ou 10h - 13h), Tarde (14h - 18h ou 12h - 15h) e Sábados Intensivos para acomodar a sua agenda atual de trabalho ou estudos."
-      },
-      {
-        pergunta: "Terei suporte técnico após a conclusão do curso?",
-        resposta: "Sim, sem dúvida! Ficará integrado num grupo exclusivo de antigos alunos e técnicos especializados da JEOOTEC, onde poderá tirar dúvidas reais de instalações, resolver problemas técnicos de clientes e receber mentorias contínuas."
-      },
-      {
-        pergunta: "As aulas são predominantemente práticas?",
-        resposta: "Certamente. A JEOOTEC orgulha-se de usar a metodologia 'Mãos na Massa'. Treina diretamente nos sistemas, simula casos reais de empresas parceiras e simula a resolução de erros e auditorias normais à gestão de faturas."
-      },
-      {
-        pergunta: "Preciso de requisitos específicos para começar?",
-        resposta: "Apenas necessita de domínio elementar de informática ótica do utilizador (saber mexer no computador e ambiente de trabalho Windows). Noções de contabilidade são úteis, mas não obrigatórias – ensinamos tudo passo-a-passo até ao nível técnico."
-      }
-    ];
-
-    function App() {
-      const [view, setView] = useState('site');
-      const [menuMobile, setMenuMobile] = useState(false);
-      const [modalInscricao, setModalInscricao] = useState(false);
-      const [modalDetails, setModalDetails] = useState(false);
-      const [selectedCurso, setSelectedCurso] = useState(null);
-      
-      const [notifVisible, setNotifVisible] = useState(false);
-      const [currentNotifName, setCurrentNotifName] = useState("");
-
-      const [chatOpen, setChatOpen] = useState(false);
-      const [chatMessage, setChatMessage] = useState("");
-
-      const [faqExpanded, setFaqExpanded] = useState(null);
-
-      const [formData, setFormData] = useState({
-        nome: '',
-        whatsapp: '',
-        email: '',
-        situacao: 'Desempregado',
-        modalidade: 'Utilizador'
-      });
-
-      const [listaInscritos, setListaInscritos] = useState([]);
-
-      const [cursos] = useState([
-        {
-          id: 1,
-          nome: 'SOFTWARE XD',
-          imagem: 'xd.png',
-          descricao: 'Software utilizado por empresas dos sectores de restauração, comércio e oficinas. Controle vendas e faturação.',
-          modulosDisponiveis: 'Restauração, Faturação, Oficina',
-          preco: '25.000',
-          precoNum: 25000,
-          vagas: 8,
-          horario: 'Manhã (09h - 13h)',
-          estado: 'Aberto',
-          empresas: 'Restaurantes, Lojas de Retalho, Oficinas de Automóveis.'
-        },
-        {
-          id: 2,
-          nome: 'SOFTWARE NEGOMIL',
-          imagem: 'negomil.png',
-          descricao: 'Solução moderna para gestão de vendas, faturação e controlo operacional hoteleiro.',
-          modulosDisponiveis: 'Restauração, Faturação, Hoteleiro',
-          preco: '30.000',
-          precoNum: 30000,
-          vagas: 5,
-          horario: 'Tarde (14h - 18h)',
-          estado: 'Restam 5',
-          empresas: 'Hotéis, Resorts, Pensões, Grandes Restaurantes.'
-        },
-        {
-          id: 3,
-          nome: 'SOFTWARE PRIMAVERA',
-          imagem: 'primavera.png',
-          descricao: 'Líder de mercado em gestão financeira, recursos humanos e contabilidade.',
-          modulosDisponiveis: 'Contabilidade, RH, Faturação',
-          preco: '45.000',
-          precoNum: 45000,
-          vagas: 12,
-          horario: 'Sábados Intensivo',
-          estado: 'Nova Turma',
-          empresas: 'Grandes Empresas, Escritórios de Contabilidade, Bancos.'
-        },
-        {
-          id: 4,
-          nome: 'SOFTWARE VENDUS',
-          imagem: 'vendus.png',
-          descricao: 'Interface baseada em nuvem, robusto e flexível para faturação rápida com conformidade da AGT.',
-          modulosDisponiveis: 'Faturação, Clientes, Inventário',
-          preco: '25.000',
-          precoNum: 25000,
-          vagas: 0,
-          horario: 'Manhã (10h - 13h)',
-          estado: 'ESGOTADO',
-          empresas: 'Supermercados, Minimercados, Clínicas, Lojas e Quiosques.'
-        },
-        {
-          id: 5,
-          nome: 'SOFTWARE SERGEST',
-          imagem: 'sergest.png',
-          descricao: 'Instalação, parametrização avançada e controle de stocks de um dos softwares nacionais de faturação mais requisitados.',
-          modulosDisponiveis: 'Vendas, Stocks, Faturação Comercial',
-          preco: '35.000',
-          precoNum: 35000,
-          vagas: 0,
-          horario: 'Manhã (10h - 13h)',
-          estado: 'ESGOTADO',
-          empresas: 'Armazéns grossistas, Farmácias, Comercio Geral de Mercadorias.'
-        },
-        {
-          id: 6,
-          nome: 'SOFTWARE SERGEST PRO',
-          imagem: 'sergest.png',
-          descricao: 'Parametrização avançada, configuração de bases de dados locais e conexões multi-caixa certificadas.',
-          modulosDisponiveis: 'Bases de Dados, Redes, Gestão de Caixas',
-          preco: '35.000',
-          precoNum: 35000,
-          vagas: 0,
-          horario: 'Manhã (10h - 13h)',
-          estado: 'ESGOTADO',
-          empresas: 'Escritórios de Contabilidade, Consultorias de Soluções de Redes.'
-        },
-        {
-          id: 7,
-          nome: 'SOFTWARE TRUNFO',
-          imagem: 'trunfo.png',
-          descricao: 'Um software clássico de confiança para empresas de logística e grandes faturadores nacionais.',
-          modulosDisponiveis: 'Logística, Orçamentações, Tesouraria',
-          preco: '38.000',
-          precoNum: 38000,
-          vagas: 0,
-          horario: 'Tarde (12h - 15h)',
-          estado: 'ESGOTADO',
-          empresas: 'Prestadores de Serviços Oficiais, Construtoras, Empresas de Mudanças.'
-        },
-        {
-          id: 8,
-          nome: 'SOFTWARE KWANZAGEST',
-          imagem: 'kwanzagest.png',
-          descricao: 'Fácil, rápido e amplamente popular. Ideal para gestão rápida de balcão e pequenas redes comerciais de comércio varejista.',
-          modulosDisponiveis: 'Caixa Rápido, Faturas Simplificadas, Relatórios',
-          preco: '28.000',
-          precoNum: 28000,
-          vagas: 0,
-          horario: 'Tarde (12h - 15h)',
-          estado: 'ESGOTADO',
-          empresas: 'Salões de Beleza, Boutiques, Pastelarias, Minimercados locais.'
-        }
-      ]);
-
-      useEffect(() => {
-        carregarInscritos();
-
-        const firstNotifTimer = setTimeout(() => {
-          triggerRandomRegistrationNotification();
-        }, 3000);
-
-        const intervalNotif = setInterval(() => {
-          triggerRandomRegistrationNotification();
-        }, 60000);
-
-        return () => {
-          clearTimeout(firstNotifTimer);
-          clearInterval(intervalNotif);
-        };
-      }, []);
-
-      const triggerRandomRegistrationNotification = () => {
-        const randomIndex = Math.floor(Math.random() * listNomesAngolanos.length);
-        setCurrentNotifName(listNomesAngolanos[randomIndex]);
-        setNotifVisible(true);
-
-        setTimeout(() => {
-          setNotifVisible(false);
-        }, 8000);
-      };
-
-      const carregarInscritos = () => {
-        const dados = localStorage.getItem('jeootec_inscritos');
-        setListaInscritos(dados ? JSON.parse(dados) : []);
-      };
-
-      const calcularPreco = () => {
-        if (!selectedCurso) return 0;
-        return formData.modalidade === 'Profissional' 
-          ? selectedCurso.precoNum * 1.5 
-          : selectedCurso.precoNum;
-      };
-
-      const formatarDinheiro = (v) => {
-        return v.toLocaleString('pt-AO') + ' Kz';
-      };
-
-      const acessoAdmin = () => {
-        const senha = prompt("Introduza a senha de Administrador JEOOTEC:");
-        if (senha === "jeootec2024") {
-          setView('admin');
-          carregarInscritos();
-        } else {
-          alert("Senha incorreta!");
-        }
-      };
-
-      const openDetails = (curso) => {
-        setSelectedCurso(curso);
-        setModalDetails(true);
-      };
-
-      const openInscricao = (curso) => {
-        setSelectedCurso(curso);
-        setFormData({
-          nome: '',
-          whatsapp: '',
-          email: '',
-          situacao: 'Desempregado',
-          modalidade: 'Utilizador'
-        });
-        setModalInscricao(true);
-      };
-
-      const getStatusClass = (estado) => {
-        if (estado === 'Aberto') return 'text-green-600 bg-green-50 border border-green-200';
-        if (estado.includes('Restam')) return 'text-green-600 bg-green-50 border border-green-200';
-        if (estado === 'Nova Turma') return 'text-blue-600 bg-blue-50 border border-blue-200';
-        return 'text-red-500 bg-red-50 border border-red-200';
-      };
-
-      const submitInscricao = () => {
-        if (!selectedCurso) return;
-        const precoFinal = calcularPreco();
+    <!-- VISTA PRINCIPAL -->
+    <div x-show="view === 'site'">
         
-        const novaInscricao = {
-          data: new Date().toLocaleDateString('pt-PT'),
-          nome: formData.nome,
-          curso: selectedCurso.nome,
-          whatsapp: formData.whatsapp,
-          valor: formatarDinheiro(precoFinal),
-          pago: false
-        };
-        
-        const atualizados = [novaInscricao, ...listaInscritos];
-        setListaInscritos(atualizados);
-        localStorage.setItem('jeootec_inscritos', JSON.stringify(atualizados));
+        <!-- HERO SECTION CENTRALIZADA -->
+        <section id="home" class="hero-custom text-white py-20 md:py-32 text-center">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate__animated animate__fadeInDown">
+                        Domine Softwares de Gestão e Abra Portas para o Mercado de Trabalho!
+                    </h1>
+                    <p class="text-lg md:text-xl mb-10 text-blue-100">
+                        Aprenda a instalar, configurar e utilizar os softwares mais solicitados em Angola em apenas 2 dias. Ganhe uma habilidade que vende soluções e garante remuneração imediata.
+                    </p>
+                    <div class="flex flex-col md:flex-row justify-center gap-4">
+                        <a href="#cursos" class="bg-white text-blue-900 px-10 py-4 rounded-full font-bold shadow-lg hover:bg-gray-100 uppercase transition">Ver Formações</a>
+                        <a href="https://wa.me/244953646352" target="_blank" class="bg-green-500 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-green-600 uppercase flex items-center justify-center gap-2 transition">
+                            <i class="fab fa-whatsapp text-xl"></i> WhatsApp
+                        </a>
+                    </div>
+                    <p class="mt-8 text-sm italic font-light text-blue-200">
+                        <i class="fas fa-star text-yellow-400"></i> BÔNUS: Alunos destaque podem trabalhar na JEOOTEC ou serem recomendados para clientes parceiro.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-        const msg = `Olá JEOOTEC! 🚀\n\n*FICHA DE INSCRIÇÃO*\n*Nome:* ${formData.nome}\n*Curso:* ${selectedCurso.nome}\n*WhatsApp:* ${formData.whatsapp}\n*Investimento:* ${formatarDinheiro(precoFinal)}\n*Modalidade:* ${formData.modalidade === 'Profissional' ? 'Profissional Completa' : 'Apenas Utilizador'}\n--------------------------\nAguardando IBAN para pagamento de confirmação.`;
-        window.open(`https://api.whatsapp.com/send?phone=244953646352&text=${encodeURIComponent(msg)}`, '_blank');
-        
-        setModalInscricao(false);
-        alert("Inscrição registada no sistema JEOOTEC! Por favor, conclua o envio no WhatsApp.");
-      };
+        <!-- SECÇÃO BIOGRAFIA DO CEO -->
+        <section id="ceo" class="py-16 bg-white border-b">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <div class="w-full md:w-1/3 flex justify-center">
+                    <img src="perfil2.png" alt="CEO JEOOTEC" class="rounded-2xl shadow-2xl border-4 border-blue-50 w-80 md:w-full max-w-sm">
+                </div>
+                <div class="w-full md:w-2/3 text-center md:text-left">
+                    <h2 class="text-3xl font-bold text-blue-900 mb-6">Sobre o nosso Especialista</h2>
+                    <div class="text-lg text-gray-600 space-y-4 leading-relaxed italic">
+                        <p>
+                            Olá, sou o fundador da JEOOTEC. Antes de abrir as portas deste centro de formação, eu já estava no terreno, resolvendo os problemas que as empresas enfrentam diariamente. É fundamental que saibas: a JEOOTEC não é apenas uma escola; somos uma empresa de tecnologia activa que implementa, configura e dá suporte real a dezenas de negócios em Angola.
+Ao longo da minha trajetória, tive a responsabilidade de prestar serviços críticos e instalar sistemas de gestão em grandes players do mercado,como Arcaviva, Grupo Dezema, Grupo ALCA e Organizações Santos Bikukus. e diversas outras instituições de renome nacional. Foi lá, no "calor da operação", que entendi o que separa um utilizador comum de um técnico de elite.
+A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-how' que eu utilizo para prestar consultoria. Aqui, não aprendes apenas a 'clicar em botões'; aprendes a lógica técnica, a instalação do zero, a configuração avançada e a estratégia de venda da solução. Tu não sairás daqui apenas com um certificado, mas sim com a habilidade que as empresas mais disputam e melhor pagam atualmente no nosso país. Prepara-te para uma carreira de sucesso com retorno financeiro imediato.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      const marcarPago = (idx) => {
-        const atualizados = [...listaInscritos];
-        atualizados[idx].pago = !atualizados[idx].pago;
-        setListaInscritos(atualizados);
-        localStorage.setItem('jeootec_inscritos', JSON.stringify(atualizados));
-      };
+        <!-- OFERTA EXCLUSIVA Section with Pulsing Neon Glowing Effects (NEW ELEMENT) -->
+        <section id="oferta-exclusiva" class="py-12 bg-gray-900 text-white relative overflow-hidden" x-show="view === 'site'">
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/10 rounded-full blur-[100px]"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px]"></div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="max-w-5xl mx-auto rounded-3xl bg-slate-950 p-8 md:p-12 border-cyan-400 border-2 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_0_30px_rgba(0,210,255,0.25)] neon-border-blue">
+                    
+                    <div class="flex-1 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-full text-xs font-black tracking-widest uppercase neon-pulse-green">
+                            <i class="fas fa-percentage"></i> Campanha Limitada JEOOTEC
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white neon-text-cyan">
+                            Oferta Exclusiva de Lançamento!
+                        </h3>
+                        <p class="text-slate-300 text-sm leading-relaxed max-w-2xl">
+                            Faça a sua pré-inscrição em qualquer um dos novos cursos de faturação (Vendus, Sergest, Sergest Pro, Trunfo ou Kwanzagest) hoje e ganhe <strong class="text-cyan-400 font-bold">15% de desconto imediato</strong> na confirmação, além de <strong class="text-emerald-400 font-bold">30 dias de suporte técnico gratuito</strong> pós-formação!
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Desconto direto de 15%</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Suporte WhatsApp com Engenheiro Senior</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Apenas para inscrições enviadas hoje</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Certificado Registado Válido</div>
+                        </div>
+                    </div>
+                    
+                    <div class="shrink-0 flex flex-col items-center gap-4 text-center pb-2">
+                        <div class="p-6 bg-slate-900/80 rounded-2xl border border-cyan-500/20 flex flex-col items-center justify-center">
+                            <span class="text-[10px] text-slate-400 uppercase tracking-widest">Aproveite Já</span>
+                            <div class="text-4xl font-black text-cyan-400 tracking-tight py-1 font-mono neon-text-cyan">15% OFF</div>
+                            <span class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5 leading-none">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Restam 5 vagas com bónus
+                            </span>
+                        </div>
+                        <a href="#cursos" class="w-full bg-cyan-400 hover:bg-cyan-300 text-[#0a192f] font-bold py-3.5 px-6 rounded-xl transition text-xs uppercase tracking-widest text-center shadow-[0_0_15px_rgba(0,210,255,0.4)]">
+                            Garantir Desconto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      const removerInscrito = (idx) => {
-        if(confirm("Deseja remover este inscrito permanentemente do sistema JEOOTEC?")) {
-          const atualizados = [...listaInscritos];
-          atualizados.splice(idx, 1);
-          setListaInscritos(atualizados);
-          localStorage.setItem('jeootec_inscritos', JSON.stringify(atualizados));
-        }
-      };
+        <!-- SECÇÃO DE CURSOS -->
+        <section id="cursos" class="py-20 container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4 uppercase italic">Escolha a Formação Ideal para o Seu Futuro</h2>
+                <p class="text-gray-600">Cada software é utilizado por diferentes tipos de empresas. Escolha o módulo que mais se adequa aos seus objetivos profissionais.</p>
+            </div>
 
-      const sendFloatingMessage = (e) => {
-        e.preventDefault();
-        if (!chatMessage.trim()) return;
-        const msg = `Olá JEOOTEC! 😊\nTenho uma dúvida:\n${chatMessage}`;
-        window.open(`https://api.whatsapp.com/send?phone=244953646352&text=${encodeURIComponent(msg)}`, '_blank');
-        setChatMessage("");
-        setChatOpen(false);
-      };
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <template x-for="curso in cursos" :key="curso.id">
+                    <div :class="curso.id >= 4 ? 'neon-border-blue bg-white rounded-xl shadow-lg overflow-hidden card-hover flex flex-col' : 'bg-white rounded-xl shadow-lg overflow-hidden card-hover border border-gray-100 flex flex-col'">
+                        <div class="relative h-64 bg-gray-100">
+                            <img :src="curso.imagem" class="w-full h-full img-software">
+                            <div class="absolute top-4 right-4">
+                                <span :class="getStatusClass(curso.estado)" class="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" x-text="curso.estado"></span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-2 text-blue-900" x-text="curso.nome"></h3>
+                            <p class="text-sm text-gray-600 mb-4 line-clamp-3" x-text="curso.descricao"></p>
+                            
+                            <div class="space-y-3 mb-6 text-sm">
+                                <div class="flex items-center"><i class="fa-solid fa-layer-group w-6 text-blue-500"></i> <span x-text="'Módulos: ' + curso.modulosDisponiveis"></span></div>
+                                <div class="flex items-center"><i class="fa-solid fa-clock w-6 text-blue-500"></i> <span x-text="curso.horario"></span></div>
+                                <div class="flex items-center"><i class="fa-solid fa-users w-6 text-blue-500"></i> <span x-text="'Vagas Restantes: ' + curso.vagas"></span></div>
+                                <div class="text-2xl font-bold text-blue-600" x-text="curso.preco + ' Kz'"></div>
+                            </div>
 
-      return (
-        <div className="bg-slate-50 text-slate-900 font-sans min-h-screen relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
-          
-          {/* HEADER SECTION - Styled with clean minimalism aesthetic */}
-          <header className="sticky top-0 z-50 bg-[#0a192f] h-16 flex items-center justify-between px-6 md:px-12 shadow-md border-b border-blue-400/20">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow-[0_0_15px_rgba(0,123,255,0.3)]">
-                <div className="font-black text-[#0056b3] text-xl">J</div>
-              </div>
-              <span className="text-white font-bold tracking-wider text-xl">JEOO<span className="text-blue-400">TEC</span></span>
+                            <div class="flex gap-2 mt-auto">
+                                <button @click="openDetails(curso)" class="flex-1 border border-blue-600 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-50 transition cursor-pointer">Ver Detalhes</button>
+                                <button @click="openInscricao(curso)" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition shadow-lg cursor-pointer">Inscrever-me</button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- SECÇÃO FAQ (ACORDEÃO EXPANSÍVEL - NEW ELEMENT) -->
+        <section id="faqs" class="py-16 container mx-auto px-6 border-t border-gray-100" x-show="view === 'site'">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2 uppercase italic neon-text-cyan">Perguntas Frequentes</h2>
+                <p class="text-gray-600 text-sm">Respostas diretas e honestas sobre as nossas metodologias prátcas, IBANs, certificados e suporte pós-curso.</p>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-300">
-              <a href="#home" className="text-white border-b-2 border-blue-400 pb-1 hover:text-white transition-colors">Home</a>
-              <a href="#ceo" className="hover:text-white transition-colors">Especialista</a>
-              <a href="#cursos" className="hover:text-white transition-colors">Formações</a>
-              <a href="#ofertas" className="hover:text-white transition-colors">Parcerias</a>
-              <a href="#faqs" className="hover:text-white transition-colors">FAQ</a>
-              <button 
-                onClick={acessoAdmin} 
-                className="bg-blue-600 text-white px-5 py-1.5 rounded-full hover:bg-blue-700 transition shadow-[0_0_10px_rgba(37,99,235,0.3)] border border-blue-400/40 text-xs cursor-pointer"
-              >
-                Painel Admin
-              </button>
-            </nav>
-
-            {/* Menu Mobile Button */}
-            <div className="md:hidden">
-              <button 
-                id="menu-mobile-toggle"
-                onClick={() => setMenuMobile(!menuMobile)} 
-                className="text-white text-2xl hover:text-blue-300 p-1 focus:outline-none"
-              >
-                {menuMobile ? <Icon name="X" className="w-6 h-6" /> : <Icon name="Menu" className="w-6 h-6" />}
-              </button>
-            </div>
-          </header>
-
-          {/* Dropdown Mobile Box */}
-          {menuMobile && (
-            <div className="md:hidden bg-[#0d1e36] border-b border-blue-900/40 p-5 flex flex-col space-y-4 font-semibold text-sm text-slate-200 z-40 relative shadow-inner fade-enter">
-              <a href="#home" onClick={() => setMenuMobile(false)} className="hover:text-white py-1">Início</a>
-              <a href="#ceo" onClick={() => setMenuMobile(false)} className="hover:text-white py-1">Especialista</a>
-              <a href="#cursos" onClick={() => setMenuMobile(false)} className="hover:text-white py-1">Formações</a>
-              <a href="#ofertas" onClick={() => setMenuMobile(false)} className="hover:text-white py-1">Parcerias</a>
-              <a href="#faqs" onClick={() => setMenuMobile(false)} className="hover:text-white py-1">Perguntas</a>
-              <button 
-                onClick={() => { acessoAdmin(); setMenuMobile(false); }} 
-                className="bg-blue-600 text-white py-2.5 rounded-full font-bold hover:bg-blue-700 transition text-center text-xs shadow-md"
-              >
-                Painel Admin
-              </button>
-            </div>
-          )}
-
-          {/* MAIN VIEW SITE */}
-          {view === 'site' && (
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
-              
-              {/* HERO SECTION & TOP HIGHLIGHTS */}
-              <section id="home" className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
-                <div className="lg:col-span-8 flex flex-col space-y-6">
-                  
-                  {/* Minimalist Header Cover card */}
-                  <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col justify-center relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl"></div>
-                    <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase mb-5 self-start">
-                      <Icon name="Sparkles" className="w-3.5 h-3.5 text-blue-500 mr-1" />
-                      Formação Prática em Angola
-                    </div>
-                    
-                    <h1 className="text-3xl md:text-5xl font-black text-[#0a192f] leading-tight mb-4 tracking-tight">
-                      Domine Softwares de Gestão em <span className="text-blue-600 italic underline decoration-blue-300">Angola</span>
-                    </h1>
-                    
-                    <p className="text-sm md:text-base text-slate-500 max-w-2xl leading-relaxed mb-6 font-light">
-                      A JEOOTEC capacita técnicos para as maiores soluções do mercado: Primavera, XD, Vendus e mais. Formação intensiva de 2 dias com retorno profissional imediato e assessoria AGT.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <a 
-                        href="#cursos" 
-                        className="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition shadow-sm text-sm text-center uppercase tracking-wider"
-                      >
-                        Ver Formações
-                      </a>
-                      <a 
-                        href="https://wa.me/244953646352" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-emerald-700 transition shadow-sm text-sm text-center uppercase tracking-wider flex items-center justify-center gap-2"
-                      >
-                        <Icon name="Phone" className="w-4 h-4 fill-current mr-1" /> Falar no WhatsApp
-                      </a>
-                    </div>
-
-                    <div className="mt-6 pt-5 border-t border-slate-150 flex items-center gap-2 text-xs italic text-slate-500">
-                      <span className="text-amber-500 text-sm">★</span>
-                      <span><strong>Bónus de Mérito:</strong> Alunos em destaque podem ser integrados à JEOOTEC ou encaminhados para empresas parceiras.</span>
-                    </div>
-                  </div>
-
-                  {/* QUICK GRID WITH ACTIVE AND COMPLETED COURSES */}
-                  <div>
-                    <h3 className="text-xs font-black text-[#0a192f] mb-4 uppercase tracking-widest font-mono">Estado das Próximas Turmas</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {cursos.slice(0, 4).map((curso) => {
-                        const isEsgotado = curso.estado === 'ESGOTADO';
-                        return (
-                          <div 
-                            key={curso.id}
-                            className={`p-4 rounded-xl shadow-sm border transition-all ${
-                              isEsgotado 
-                                ? 'bg-slate-100 border-slate-200 border-l-4 border-l-red-400 opacity-80' 
-                                : 'bg-white border-slate-200 border-l-4 border-l-green-500 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className={`text-[10px] font-bold uppercase mb-1 ${isEsgotado ? 'text-red-500' : 'text-green-600'}`}>
-                              {isEsgotado ? 'Esgotado' : curso.estado}
-                            </div>
-                            <div className="font-extrabold text-xs truncate text-slate-900 uppercase">{curso.nome}</div>
-                            <p className="text-[9px] text-slate-500 leading-tight mt-1 line-clamp-1">{curso.descricao}</p>
-                            <div className={`mt-2 font-black text-xs ${isEsgotado ? 'text-slate-400' : 'text-blue-600'}`}>
-                              {curso.preco} Kz
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* SIDE COLUMN: OFFERS AND CEO BIO */}
-                <div className="lg:col-span-4 flex flex-col space-y-6">
-                  
-                  {/* Premium Reseller Card */}
-                  <div className="bg-[#0a192f] rounded-2xl p-6 border-2 border-cyan-400 shadow-[0_5px_15px_rgba(34,211,238,0.15)] relative overflow-hidden text-white">
-                    <div className="absolute -top-10 -right-10 w-24 h-24 bg-cyan-400 opacity-10 rounded-full blur-2xl"></div>
-                    <div className="inline-block px-3 py-1 bg-cyan-400 text-[#0a192f] text-[10px] font-black rounded-full mb-4 uppercase tracking-widest">
-                      Parceria Oficial
-                    </div>
-                    <h2 className="font-black text-xl leading-tight mb-2 italic">Seja um Revendedor</h2>
-                    <p className="text-slate-300 text-xs leading-relaxed mb-6 font-light">
-                      Torne-se parceiro oficial JEOOTEC em Angola. Ganhe excelentes comissões revendendo nossos sistemas de faturação para lojas, restaurantes e comércios locais.
-                    </p>
-                    <a 
-                      href="https://wa.me/244953646352?text=Olá JEOOTEC! Gostaria de condições de parceria para revenda de softwares de gestão."
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full bg-cyan-400 hover:bg-cyan-300 text-[#0a192f] font-bold py-3 rounded-xl transition text-xs uppercase tracking-wider block text-center shadow-lg"
-                    >
-                      Falar no WhatsApp
-                    </a>
-                  </div>
-
-                  {/* CEO micro info */}
-                  <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-start space-x-3">
-                    <div className="w-12 h-12 bg-blue-50 rounded-full border border-blue-100 flex items-center justify-center shrink-0 text-blue-600">
-                      <Icon name="User" className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs font-black text-slate-900">CEO Especialista</div>
-                      <div className="text-[10px] text-slate-400 font-mono uppercase tracking-widest mt-0.5">Consultor Técnico AGT</div>
-                      <p className="text-[10px] text-slate-500 italic mt-2 leading-relaxed">
-                        "Não ensinamos os alunos apenas a clicar em botões, entregamos a verdadeira lógica de suporte técnico que as empresas procuram."
-                      </p>
-                    </div>
-                  </div>
-
-                </div>
-              </section>
-
-              {/* SECTION: FULL COURSES SELECTION */}
-              <section id="cursos" className="space-y-6 scroll-mt-20">
-                <div className="text-center max-w-2xl mx-auto space-y-2">
-                  <span className="text-xs font-black uppercase tracking-widest text-blue-650 font-mono">FORMAÇÃO PROFISSIONAL EXCLUSIVA</span>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 font-display">Escolha a Formação Ideal para o seu Futuro</h2>
-                  <p className="text-xs md:text-sm text-slate-500 font-light max-w-xl mx-auto">
-                    Todos os cursos são focados em prática real e incluem materiais exclusivos com simulações de instalações que você usará no quotidiano.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {cursos.map((curso) => {
-                    const isEsgotado = curso.estado === 'ESGOTADO';
-                    return (
-                      <div 
-                        key={curso.id}
-                        className={`bg-white rounded-2xl border transition-all flex flex-col ${
-                          isEsgotado 
-                            ? 'border-slate-200 border-l-[6px] border-l-red-400 opacity-90 hover:shadow-sm' 
-                            : 'border-slate-200 border-l-[6px] border-l-blue-600 hover:shadow-md hover:-translate-y-1'
-                        }`}
-                      >
-                        {/* Upper title & badge */}
-                        <div className="p-6 pb-2 flex-grow flex flex-col">
-                          <div className="flex justify-between items-start mb-3">
-                            <span className="text-xs font-mono font-bold tracking-widest text-blue-650 uppercase">
-                              {curso.nome}
+            <div class="max-w-4xl mx-auto space-y-4">
+                <template x-for="(faq, index) in faqsData" :key="index">
+                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300 overflow-hidden"
+                         :class="faqExpanded === index ? 'neon-border-blue' : 'hover:border-gray-300'">
+                        <button @click="faqExpanded = (faqExpanded === index ? null : index)"
+                                class="w-full px-6 py-5 flex justify-between items-center text-left focus:outline-none">
+                            <span class="font-bold text-blue-900 text-base flex items-center gap-2">
+                                <span class="text-cyan-500 font-mono text-sm leading-none">0<span x-text="index+1"></span>.</span>
+                                <span x-text="faq.pergunta"></span>
                             </span>
-                            <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${getStatusClass(curso.estado)}`}>
-                              {isEsgotado ? 'Esgotado' : curso.estado}
-                            </span>
-                          </div>
-                          
-                          <h3 className="text-lg font-bold text-slate-900 font-display mb-2">{curso.nome}</h3>
-                          <p className="text-xs text-slate-500 font-light leading-relaxed mb-4 flex-grow line-clamp-3">
-                            {curso.descricao}
-                          </p>
-
-                          <div className="space-y-2 border-t border-slate-100 pt-4 mt-auto">
-                            <div className="flex items-center justify-between text-xs text-slate-600">
-                              <span className="flex items-center gap-1.5"><Icon name="Layers" className="w-3.5 h-3.5 text-slate-400 mr-1" /> Módulos:</span>
-                              <span className="font-semibold truncate max-w-[150px]">{curso.modulosDisponiveis}</span>
+                            <div class="text-blue-600 ml-4 shrink-0 transition-transform duration-300" :class="faqExpanded === index ? 'rotate-180' : ''">
+                                <i class="fas fa-chevron-down text-lg"></i>
                             </div>
-                            <div className="flex items-center justify-between text-xs text-slate-600">
-                              <span className="flex items-center gap-1.5"><Icon name="Clock" className="w-3.5 h-3.5 text-slate-400 mr-1" /> Horário:</span>
-                              <span className="font-semibold">{curso.horario}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-xs text-slate-600">
-                              <span className="flex items-center gap-1.5"><Icon name="Users" className="w-3.5 h-3.5 text-slate-400 mr-1" /> Vagas:</span>
-                              <span className={`font-semibold ${isEsgotado ? 'text-red-500' : 'text-slate-900'}`}>
-                                {isEsgotado ? 'Sem vagas' : `${curso.vagas} vagas`}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Bottom Pricing & Actions */}
-                        <div className="p-6 pt-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 flex items-center justify-between">
-                          <div>
-                            <p className="text-[10px] text-slate-400 uppercase tracking-widest">Preço Base</p>
-                            <p className="text-base font-black text-blue-650">{curso.preco} Kz</p>
-                          </div>
-                          
-                          <div className="flex gap-2 shrink-0">
-                            <button 
-                              onClick={() => openDetails(curso)}
-                              className="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-slate-100 transition cursor-pointer"
-                            >
-                              Detalhes
-                            </button>
-                            <button 
-                              onClick={() => {
-                                if (isEsgotado) {
-                                  alert(`Lamentamos, mas as vagas para as turmas de ${curso.nome} estão temporariamente esgotadas. Entre em contacto por WhatsApp para ficar em lista de espera.`);
-                                } else {
-                                  openInscricao(curso);
-                                }
-                              }}
-                              className={`px-3 py-2 rounded-xl text-xs font-bold transition uppercase cursor-pointer ${
-                                isEsgotado 
-                                  ? 'bg-slate-200 text-slate-400 border border-slate-200 cursor-not-allowed' 
-                                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
-                              }`}
-                            >
-                              Inscrição
-                            </button>
-                          </div>
-                        </div>
-
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-
-              {/* BIOGRAPHY SECTION OF THE CEO */}
-              <section id="ceo" className="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm scroll-mt-20">
-                <div className="flex flex-col lg:flex-row gap-12 items-center">
-                  
-                  {/* Left Column: Visual Element */}
-                  <div className="w-full lg:w-1/3 flex justify-center">
-                    <div className="bg-slate-50 border border-slate-250 p-6 rounded-2xl text-center w-full max-w-[280px] shadow-inner">
-                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold mx-auto mb-4">
-                        <Icon name="User" className="w-8 h-8 text-blue-700" />
-                      </div>
-                      <h4 className="font-bold text-[#0a192f] text-lg">Especialista Mentor</h4>
-                      <p className="text-xs text-slate-500 font-mono tracking-widest mt-0.5 uppercase">Consultor de TI sênior</p>
-                      
-                      <div className="mt-6 space-y-2 text-left text-xs text-slate-600">
-                        <p className="flex items-center gap-1.5"><Icon name="CheckCircle" className="w-4 h-4 text-emerald-500 shrink-0 mr-1" /> Suporte Crítico AGT</p>
-                        <p className="flex items-center gap-1.5"><Icon name="CheckCircle" className="w-4 h-4 text-emerald-500 shrink-0 mr-1" /> Configuração de Redes</p>
-                        <p className="flex items-center gap-1.5"><Icon name="CheckCircle" className="w-4 h-4 text-emerald-500 shrink-0 mr-1" /> +10 anos active no mercado</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Bio Content */}
-                  <div className="w-full lg:w-2/3 space-y-4">
-                    <span className="text-xs font-black tracking-widest text-blue-650 font-mono block uppercase">O seu futuro mentor</span>
-                    <h2 className="text-2xl md:text-3xl font-black text-[#0a192f] font-display">Sobre o nosso Especialista</h2>
-                    
-                    <div className="text-slate-600 text-sm md:text-base font-light space-y-4 leading-relaxed">
-                      <p>
-                        Olá, eu sou o mentor principal da <strong className="text-slate-800 font-medium">JEOOTEC</strong>. Antes de abrir este centro especializado, eu já realizava intervenções diárias resolvendo problemas de segurança e parametrização fiscal crítica diretamente nas empresas em Angola.
-                      </p>
-                      <p>
-                        A JEOOTEC não é uma escola puramente teórica de informática. Nós somos uma consultoria tech ativa. Fornecemos suporte crítico a grandes players nacionais do mercado como <strong className="text-slate-800 font-medium">Arcaviva, Grupo Dezema, Grupo ALCA e Organizações Santos Bikukus</strong>.
-                      </p>
-                      <p className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl italic text-blue-900 text-xs md:text-sm font-light leading-relaxed">
-                        "O meu foco aqui é dar-lhe todo o segredo técnico empresarial que eu aplico em campo corporativo de topo. Você aprenderá como configurar impressoras térmicas subordinadas, ligar gavetas automáticas, gerir cópias de segurança em bases de dados SQL, e resolver discrepâncias exigidas pela autoridade fiscal."
-                      </p>
-                    </div>
-                  </div>
-
-                </div>
-              </section>
-
-              {/* SECTION: EXCLUSIVE PARTNERSHIP PROMOTION */}
-              <section id="ofertas" className="bg-[#0a192f] rounded-3xl p-8 md:p-12 shadow-lg border border-blue-900 relative overflow-hidden text-white scroll-mt-20">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px]"></div>
-                
-                <div className="text-center max-w-3xl mx-auto space-y-6 relative z-10">
-                  <span className="bg-blue-600 text-white border border-blue-400 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-block shadow-sm">
-                    Oportunidades Angola
-                  </span>
-                  
-                  <h3 className="text-2xl md:text-4xl font-extrabold font-display leading-tight">
-                    Deseja Revender Nossos Softwares de Faturação?
-                  </h3>
-                  
-                  <p className="text-slate-300 text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto">
-                    Ajude empresas, boutiques e pequenos negócios em sua província a emitirem faturas com conformidade legal da AGT de modo rápido e simples. Fornecemos formação gratuita aos parceiros.
-                  </p>
-
-                  <div className="pt-2">
-                    <a 
-                      href="https://wa.me/244953646352?text=Olá JEOOTEC! Estou interessado na parceria de revenda de vossos softwares de faturação."
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-emerald-600 text-white font-bold py-3.5 px-8 rounded-full hover:bg-emerald-700 transition shadow-md hover:shadow-lg inline-flex items-center gap-2 uppercase text-xs tracking-wider border border-emerald-500/30 font-semibold"
-                    >
-                      <Icon name="Phone" className="w-4 h-4 fill-current mr-1 text-white" /> Começar Parceria no WhatsApp
-                    </a>
-                  </div>
-                </div>
-              </section>
-
-              {/* SECTION: FAQ ACCORDION */}
-              <section id="faqs" className="max-w-4xl mx-auto space-y-6 scroll-mt-20">
-                <div className="text-center space-y-2">
-                  <span className="text-xs font-black uppercase tracking-widest text-blue-650 font-mono">SUPORTE E RESPOSTAS</span>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 font-display">Perguntas Frequentes</h2>
-                  <p className="text-xs md:text-sm text-slate-500 font-light max-w-md mx-auto">
-                    Respostas diretas e honestas sobre as nossas metodologias práticas, IBANs, certificados e suporte pós-curso.
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  {faqsData.map((faq, index) => {
-                    const isExpanded = faqExpanded === index;
-                    return (
-                      <div 
-                        key={index}
-                        className={`bg-white rounded-xl border transition-all ${
-                          isExpanded 
-                            ? 'border-blue-500 shadow-sm' 
-                            : 'border-slate-200 hover:border-slate-300 shadow-sm'
-                        }`}
-                      >
-                        <button 
-                          onClick={() => setFaqExpanded(isExpanded ? null : index)}
-                          className="w-full px-5 py-4 flex justify-between items-center text-left focus:outline-none"
-                        >
-                          <span className="font-bold text-slate-900 text-sm md:text-base font-display flex items-center gap-2">
-                            <span className="text-blue-600 font-mono text-xs">0{index + 1}.</span>
-                            {faq.pergunta}
-                          </span>
-                          <div className="p-1 rounded-lg bg-slate-50 border border-slate-100 text-slate-500">
-                            {isExpanded ? <Icon name="ChevronUp" className="w-4 h-4 text-blue-600" /> : <Icon name="ChevronDown" className="w-4 h-4" />}
-                          </div>
                         </button>
                         
-                        {isExpanded && (
-                          <div className="px-5 pb-4 pt-1 text-xs md:text-sm text-slate-500 font-light leading-relaxed border-t border-slate-100 bg-slate-50/50 fade-enter">
-                            {faq.resposta}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-
-            </main>
-          )}
-
-          {/* ADMIN PANEL VIEW */}
-          {view === 'admin' && (
-            <main className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-6 fade-enter">
-              <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center p-6 bg-white border border-slate-200 rounded-2xl gap-4 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-600">
-                    <Icon name="Layers" className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold text-slate-900 font-display">Painel de Inscritos</h1>
-                    <p className="text-xs text-slate-500 font-light">Controle interno de confirmações de matrícula JEOOTEC</p>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => setView('site')} 
-                  className="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 transition cursor-pointer"
-                >
-                  Voltar ao Site
-                </button>
-              </div>
-
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead className="bg-[#0a192f] text-white text-[10px] font-mono uppercase tracking-widest border-b border-blue-950">
-                      <tr>
-                        <th className="p-4 font-bold">Data</th>
-                        <th className="p-4 font-bold">Aluno</th>
-                        <th className="p-4 font-bold">Curso Especialidade</th>
-                        <th className="p-4 font-bold">WhatsApp</th>
-                        <th className="p-4 font-bold">Total Previsto</th>
-                        <th className="p-4 font-bold">Liquidação</th>
-                        <th className="p-4 font-bold">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-xs divide-y divide-slate-150 text-slate-700">
-                      {listaInscritos.map((aluno, index) => (
-                        <tr key={index} className="hover:bg-slate-50/70 transition">
-                          <td className="p-4 font-mono">{aluno.data}</td>
-                          <td className="p-4 font-bold text-slate-900 font-display">{aluno.nome}</td>
-                          <td className="p-4">
-                            <span className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded font-extrabold text-[10px]">
-                              {aluno.curso}
-                            </span>
-                          </td>
-                          <td className="p-4 font-mono text-blue-600">{aluno.whatsapp}</td>
-                          <td className="p-4 font-mono font-bold text-emerald-600">{aluno.valor}</td>
-                          <td className="p-4">
-                            <button 
-                              onClick={() => marcarPago(index)}
-                              className={`px-2.5 py-1 rounded-full text-[9px] font-mono font-bold uppercase transition flex items-center justify-center gap-1 ${
-                                aluno.pago 
-                                  ? 'bg-green-50 text-green-700 border border-green-200 shadow-sm' 
-                                  : 'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'
-                              }`}
-                            >
-                              <span className={`w-1.5 h-1.5 rounded-full mr-1 ${aluno.pago ? 'bg-green-500' : 'bg-amber-500 animate-pulse'}`} />
-                              {aluno.pago ? 'Sim (Pago)' : 'Não (Pendente)'}
-                            </button>
-                          </td>
-                          <td className="p-4">
-                            <button 
-                              onClick={() => removerInscrito(index)} 
-                              className="text-red-500 hover:text-red-750 p-1.5 hover:bg-red-55 rounded transition duration-150"
-                              title="Remover Ficha"
-                            >
-                              <Icon name="Trash2" className="w-4 h-4 text-red-500" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                      {listaInscritos.length === 0 && (
-                        <tr>
-                          <td colSpan={7} className="p-12 text-center text-slate-400 italic">
-                            <div className="flex flex-col items-center justify-center gap-2 max-w-sm mx-auto">
-                              <Icon name="Users" className="w-8 h-8 text-slate-300" />
-                              <p className="text-sm font-semibold text-slate-650">Nenhuma ficha submetida ainda.</p>
-                              <p className="text-[10px] text-slate-440 font-light leading-relaxed">As inscrições que os usuários preencherem e enviarem pelo site serão sincronizadas para controle nesta tabela.</p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </main>
-          )}
-
-          {/* FOOTER SECTION */}
-          {view === 'site' && (
-            <footer className="bg-[#050c1b] border-t border-slate-200 text-slate-300 py-12 mt-16">
-              <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div className="space-y-3">
-                  <span className="text-xl font-bold tracking-wider text-white font-display block">
-                    JEOOTEC
-                  </span>
-                  <p className="text-xs text-slate-400 leading-relaxed font-light">
-                    Excelência em capacitação prática corporativa e assessoria de softwares certificados em Angola. Profissionalizando o mercado nacional com soluções que vendem.
-                  </p>
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="font-bold uppercase text-blue-400 tracking-widest text-xs font-mono">Contactos Oficiais</h4>
-                  <ul className="text-xs text-slate-400 space-y-2 font-light">
-                    <li className="flex items-center gap-2"><Icon name="MapPin" className="w-4 h-4 text-slate-400 mr-1" /> Luanda, Angola</li>
-                    <li className="flex items-center gap-2 font-mono"><Icon name="Phone" className="w-4 h-4 text-slate-400 mr-1" /> +244 953 646 352</li>
-                    <li className="flex items-center gap-2 font-mono"><Icon name="Send" className="w-4 h-4 text-slate-400 mr-1" /> jeootec@gmail.com</li>
-                  </ul>
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="font-bold uppercase text-blue-400 tracking-widest text-xs font-mono">Faturamento Certificado</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed font-light">
-                    Formação com foco no enquadramento dos softwares de gestão nos termos fiscais nacionais vigentes da AGT.
-                  </p>
-                  <div className="flex gap-3">
-                    <a 
-                      href="https://wa.me/244953646352" 
-                      className="w-8 h-8 rounded-lg bg-blue-950 border border-blue-900/40 flex items-center justify-center text-blue-400 hover:text-green-400 transition"
-                      title="Falar Direto"
-                    >
-                      <Icon name="Phone" className="w-4 h-4 text-blue-400 hover:text-green-400" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-center mt-12 pt-6 border-t border-slate-900 text-[11px] text-slate-500 font-light max-w-7xl mx-auto px-6">
-                <p>&copy; {new Date().getFullYear()} JEOOTEC - Soluções Tecnológicas. Todos os direitos reservados.</p>
-                <p className="mt-1 font-mono text-[9px] text-slate-600">Luanda, Angola • Formação Homologada no Terreno</p>
-              </div>
-            </footer>
-          )}
-
-          {/* FLOAT POPUP NOTIFICATIONS (BOTTOM-LEFT) */}
-          {notifVisible && (
-            <div className="fixed bottom-6 left-6 z-[90] max-w-sm bg-white border border-slate-200 p-4 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] border-l-4 border-l-emerald-500 slide-enter">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-extrabold shrink-0 text-xs">
-                  J
-                </div>
-                <div className="text-left flex-1 min-w-0">
-                  <p className="text-xs text-slate-700 leading-relaxed font-normal">
-                    <strong className="text-slate-900 font-semibold">{currentNotifName}</strong> acabou de se inscrever!
-                  </p>
-                  <span className="text-[9px] font-mono text-emerald-600 uppercase tracking-widest mt-0.5 block flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1" />
-                    Matrícula Validada
-                  </span>
-                </div>
-                <button 
-                  onClick={() => setNotifVisible(false)} 
-                  className="text-slate-350 hover:text-slate-600 text-lg font-bold shrink-0 self-start focus:outline-none"
-                >
-                  &times;
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* FLOATING WHATSAPP CHAT IN BOTTOM-RIGHT */}
-          <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end">
-            {chatOpen && (
-              <div className="bg-white border border-slate-200 rounded-2xl w-[280px] md:w-[320px] shadow-[0_10px_40px_rgba(0,0,0,0.12)] p-4 mb-3 relative text-left slide-enter">
-                <div className="flex items-center gap-3 border-b border-slate-100 pb-3 mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-                    <Icon name="Phone" className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-xs font-display">Suporte JEOOTEC</h4>
-                    <span className="text-[9px] font-mono text-emerald-600 uppercase tracking-widest flex items-center gap-1 mt-0.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1" /> Especialista Ativo
-                    </span>
-                  </div>
-                  <button 
-                    onClick={() => setChatOpen(false)} 
-                    className="text-slate-400 hover:text-slate-600 ml-auto text-lg font-bold focus:outline-none"
-                  >
-                    &times;
-                  </button>
-                </div>
-
-                <div className="space-y-2 mb-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-left">
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-light">
-                    Escreva a sua dúvida ou solicitação e prima o botão para ser direcionado direto ao suporte do nosso WhatsApp.
-                  </p>
-                </div>
-
-                <form onSubmit={sendFloatingMessage} className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Escreva sua dúvida..." 
-                    className="flex-1 bg-slate-50 text-slate-900 text-xs border border-slate-200 p-2.5 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 font-normal"
-                    required
-                  />
-                  <button 
-                    type="submit" 
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 flex items-center justify-center cursor-pointer border border-emerald-500/20 shadow-sm"
-                    title="Enviar"
-                  >
-                    <Icon name="Send" className="w-3.5 h-3.5 text-white" />
-                  </button>
-                </form>
-              </div>
-            )}
-
-            <button 
-              onClick={() => setChatOpen(!chatOpen)}
-              className="w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center text-white shadow-lg cursor-pointer transition transform hover:scale-105 duration-150 relative border-2 border-white"
-              title="Consulte Suporte Oficial"
-            >
-              {chatOpen ? <Icon name="X" className="w-6 h-6 text-white" /> : <Icon name="MessageSquare" className="w-6 h-6 text-white" />}
-              
-              {!chatOpen && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center animate-bounce border border-white">
-                  1
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* REGISTRATION MODAL WITH DYNAMIC PRICE CALCULATION */}
-          {modalInscricao && selectedCurso && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-              <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 md:p-8 relative shadow-2xl my-8 text-left slide-enter">
-                <button 
-                  onClick={() => setModalInscricao(false)} 
-                  className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-2xl font-bold bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center border border-slate-150 focus:outline-none"
-                >
-                  &times;
-                </button>
-                
-                <h2 className="text-xl font-bold text-slate-900 font-display border-b border-slate-100 pb-3 mb-6">
-                  Ficha de Inscrição Profissional
-                </h2>
-                
-                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); submitInscricao(); }}>
-                  
-                  <div>
-                    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1 font-mono">Nome Completo</label>
-                    <input 
-                      type="text" 
-                      value={formData.nome} 
-                      onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                      placeholder="Ex: José José" 
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-200 p-3 rounded-xl focus:ring-1 focus:ring-blue-500 outline-none transition text-sm font-normal"
-                      required 
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1 font-mono">WhatsApp (Angola)</label>
-                    <input 
-                      type="tel" 
-                      value={formData.whatsapp} 
-                      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      placeholder="Ex: 953646352" 
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-200 p-3 rounded-xl focus:ring-1 focus:ring-blue-500 outline-none transition text-sm font-normal"
-                      required 
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1 font-mono">E-mail (Opcional)</label>
-                    <input 
-                      type="email" 
-                      value={formData.email} 
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="Ex: soter@gmail.com" 
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-200 p-3 rounded-xl focus:ring-1 focus:ring-blue-500 outline-none transition text-sm font-normal"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1 font-mono">Situação Profissional</label>
-                    <select 
-                      value={formData.situacao} 
-                      onChange={(e) => setFormData({ ...formData, situacao: e.target.value })}
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-200 p-3 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 text-sm font-normal"
-                    >
-                      <option value="Desempregado">Desempregado</option>
-                      <option value="Empregado">Empregado</option>
-                      <option value="Estudante">Estudante</option>
-                      <option value="Empresário">Empresário</option>
-                    </select>
-                  </div>
-
-                  <div className="p-3.5 bg-blue-50 rounded-xl border border-blue-100">
-                    <p className="text-[9px] font-bold text-blue-600 uppercase tracking-widest mb-1">Software Escolhido</p>
-                    <p className="font-extrabold text-[#0a192f] text-sm font-display">{selectedCurso.nome}</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1 font-mono">Modalidade do Curso</label>
-                    <select 
-                      value={formData.modalidade} 
-                      onChange={(e) => setFormData({ ...formData, modalidade: e.target.value })}
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-200 p-3 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 text-sm font-normal"
-                    >
-                      <option value="Utilizador">Operador Geral (Preço Base)</option>
-                      <option value="Profissional">Técnico de Suporte com Instalação (+50%)</option>
-                    </select>
-                    <p className="text-[9px] text-slate-400 italic mt-1 leading-normal pl-0.5">
-                      *<b>Técnico de Suporte</b> inclui aprendizagem de instalações locais, configurações de redes e suporte de impressões.
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-inner mt-4">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Valor do Investimento</p>
-                    <p className="text-2xl font-black text-blue-650 font-display">
-                      {formatarDinheiro(calcularPreco())}
-                    </p>
-                  </div>
-
-                  <div className="bg-amber-50 border border-amber-200 p-3.5 rounded-xl flex items-start gap-2.5">
-                    <Icon name="Shield" className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                    <p className="text-[10px] text-amber-800 leading-normal font-light">
-                      <b>Segurança JEOOTEC:</b> O nosso IBAN será enviado e verificado no canal do WhatsApp após confirmação da ficha por um consultor.
-                    </p>
-                  </div>
-
-                  <button 
-                    type="submit" 
-                    className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition uppercase text-xs tracking-widest flex items-center justify-center gap-2"
-                  >
-                    Confirmar Inscrição no WhatsApp
-                  </button>
-
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* DETAILS INFO MODAL */}
-          {modalDetails && selectedCurso && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-              <div className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-left slide-enter">
-                <button 
-                  onClick={() => setModalDetails(false)} 
-                  className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-2xl font-bold bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center border border-slate-150 focus:outline-none"
-                >
-                  &times;
-                </button>
-                
-                <div className="text-center mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-3">
-                    <Icon name="BookOpen" className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-900 font-display">{selectedCurso.nome}</h2>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono mt-0.5 block">Ficha Académica da Formação</span>
-                </div>
-
-                <div className="space-y-4 text-xs md:text-sm text-slate-600 font-light leading-relaxed">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-150 font-normal">
-                    <h4 className="font-bold text-[10px] text-slate-400 uppercase font-mono mb-1">Módulos do Software</h4>
-                    <p className="text-slate-500">{selectedCurso.modulosDisponiveis}</p>
-                  </div>
-
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-150 font-normal">
-                    <h4 className="font-bold text-[10px] text-slate-400 uppercase font-mono mb-1">Empresas que Demandam</h4>
-                    <p className="text-slate-500">{selectedCurso.empresas}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-center">
-                    <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl">
-                      <h4 className="font-bold text-[9px] text-slate-400 uppercase font-mono mb-0.5">Vagas</h4>
-                      <span className="font-bold text-slate-500">{selectedCurso.vagas === 0 ? 'Lotação Esgotada' : `${selectedCurso.vagas} Restantes`}</span>
+                        <div x-show="faqExpanded === index" 
+                             class="px-6 pb-5 pt-2 text-sm text-gray-600 leading-relaxed border-t border-gray-50 bg-slate-50/50">
+                            <span x-text="faq.resposta"></span>
+                        </div>
                     </div>
-                    <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl">
-                      <h4 className="font-bold text-[9px] text-slate-400 uppercase font-mono mb-0.5">Preço Base</h4>
-                      <span className="font-bold text-blue-600">{selectedCurso.preco} Kz</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex gap-3 text-center">
-                  <button 
-                    onClick={() => setModalDetails(false)}
-                    className="flex-grow bg-slate-105 text-slate-700 py-3 rounded-xl text-xs font-bold uppercase transition hover:bg-slate-200 cursor-pointer"
-                  >
-                    Fechar
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setModalDetails(false);
-                      if (selectedCurso.vagas === 0) {
-                        alert(`As vagas atuais de ${selectedCurso.nome} estão esgotadas. Entre em contacto via WhatsApp.`);
-                      } else {
-                        openInscricao(selectedCurso);
-                      }
-                    }}
-                    className={`flex-grow py-3 rounded-xl text-xs font-bold uppercase transition cursor-pointer ${
-                      selectedCurso.vagas === 0 
-                        ? 'bg-slate-200 text-slate-400 border border-slate-200 cursor-not-allowed' 
-                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
-                    }`}
-                  >
-                    Matrícula Fast
-                  </button>
-                </div>
-
-              </div>
+                </template>
             </div>
-          )}
+        </section>
 
+    </div>
+
+    <!-- MODAL: FORMULÁRIO DE INSCRIÇÃO COM PREÇO DINÂMICO -->
+    <div x-show="modalInscricao" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 overflow-y-auto" x-cloak>
+        <div class="bg-white rounded-2xl max-w-4xl w-full p-6 md:p-8 relative">
+            <button @click="modalInscricao = false" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500 transition cursor-pointer">&times;</button>
+            
+            <h2 class="text-2xl font-bold text-center mb-8 text-blue-900 border-b pb-4">Inscrição Profissional JEOOTEC</h2>
+            
+            <form class="space-y-6" @submit.prevent="submitInscricao()">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- DADOS -->
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-blue-600 uppercase text-xs tracking-widest">Seus Dados</h3>
+                        <input type="text" x-model="formData.nome" placeholder="Nome Completo" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none" required>
+                        <input type="tel" x-model="formData.whatsapp" placeholder="WhatsApp (9xx xxx xxx)" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none" required>
+                        <input type="email" x-model="formData.email" placeholder="E-mail" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none">
+                        <select x-model="formData.situacao" class="w-full border p-3 rounded-lg bg-white">
+                            <option value="Desempregado">Desempregado</option>
+                            <option value="Empregado">Empregado</option>
+                            <option value="Estudante">Estudante</option>
+                            <option value="Empresário">Empresário</option>
+                        </select>
+                    </div>
+
+                    <!-- FORMAÇÃO -->
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-blue-600 uppercase text-xs tracking-widest">Curso & Investimento</h3>
+                        <div class="p-3 bg-gray-100 rounded-lg">
+                            <p class="text-xs font-bold text-gray-500 uppercase mb-1">Software</p>
+                            <p class="font-bold text-blue-900" x-text="selectedCurso.nome"></p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1 uppercase text-gray-500">Modalidade</label>
+                            <select x-model="formData.modalidade" class="w-full border p-3 rounded-lg bg-white border-blue-200">
+                                <option value="Utilizador">Apenas Utilizador (Preço Base)</option>
+                                <option value="Profissional">Formação Profissional Completa (+50%)</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                            <p class="text-sm font-bold text-blue-800 uppercase">Valor a Pagar</p>
+                            <p class="text-3xl font-black text-blue-600" x-text="formatarDinheiro(calcularPreco())"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-100/50 p-4 rounded-xl flex items-center gap-3">
+                    <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                    <p class="text-xs font-bold text-blue-900">SEGURANÇA: O IBAN oficial da JEOOTEC será enviado diretamente via WhatsApp após submeter esta ficha.</p>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <i class="fab fa-whatsapp"></i> ENVIAR FICHA E RECEBER IBAN
+                </button>
+            </form>
         </div>
-      );
-    }
+    </div>
 
-    // Mount App component on HTML DOM root element
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-  </script>
+    <!-- MODAL: DETALHES DO CURSO -->
+    <div x-show="modalDetails" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 overflow-y-auto" x-cloak>
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 md:p-8 relative">
+            <button @click="modalDetails = false" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500 transition cursor-pointer">&times;</button>
+            
+            <div class="text-center pb-4 border-b mb-6 border-gray-150">
+                <span class="text-xs font-bold uppercase tracking-widest text-cyan-600 font-mono">Mais Informações</span>
+                <h2 class="text-2xl font-extrabold text-blue-900 mt-1" x-text="selectedCurso.nome"></h2>
+            </div>
+            
+            <div class="space-y-4 text-sm text-gray-700">
+                <div>
+                    <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider text-blue-650">Descrição Geral</h3>
+                    <p class="mt-1 leading-relaxed text-gray-600 text-xs md:text-sm" x-text="selectedCurso.descricao"></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
+                    <div>
+                        <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Módulos Abordados</span>
+                        <p class="font-semibold text-gray-900 text-xs mt-0.5" x-text="selectedCurso.modulosDisponiveis"></p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Horários das Próximas Turmas</span>
+                        <p class="font-semibold text-gray-900 text-xs mt-0.5" x-text="selectedCurso.horario"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider text-blue-650">Principais Áreas de Atuação</h3>
+                    <p class="mt-1 text-gray-600 text-xs md:text-sm" x-text="selectedCurso.empresas || 'Lojas, Restaurantes, Clínicas, Supermercados ou Gestão Comercial.'"></p>
+                </div>
+                
+                <div class="pt-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Investimento Competitivo</span>
+                        <p class="text-2xl font-black text-blue-600 font-display" x-text="selectedCurso.preco ? selectedCurso.preco + ' Kz' : ''"></p>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button @click="modalDetails = false" class="flex-1 sm:flex-none border border-gray-300 hover:bg-gray-100 text-gray-700 py-2.5 px-5 rounded-lg font-bold text-xs uppercase cursor-pointer">Fechar</button>
+                        <button @click="modalDetails = false; openInscricao(selectedCurso)" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-850 text-white py-2.5 px-5 rounded-lg font-bold text-xs uppercase shadow-lg cursor-pointer">Inscrever-me</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMIN COM GESTÃO DE INSCRITOS -->
+    <div x-show="view === 'admin'" class="min-h-screen bg-gray-100 p-4 md:p-8" x-cloak>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <h1 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-users-cog text-blue-600"></i> Gestão de Inscritos JEOOTEC</h1>
+            <button @click="view = 'site'" class="bg-gray-800 text-white px-6 py-2 rounded-lg font-bold cursor-pointer">Voltar ao Site</button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-blue-600 text-white uppercase text-xs tracking-widest">
+                        <tr>
+                            <th class="p-4">Data</th>
+                            <th class="p-4">Aluno</th>
+                            <th class="p-4">Curso Escolhido</th>
+                            <th class="p-4">WhatsApp</th>
+                            <th class="p-4">Valor</th>
+                            <th class="p-4">Estado</th>
+                            <th class="p-4">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <template x-for="(aluno, index) in listaInscritos" :key="index">
+                            <tr class="border-b hover:bg-blue-50 transition">
+                                <td class="p-4 text-gray-500" x-text="aluno.data"></td>
+                                <td class="p-4 font-bold text-blue-900" x-text="aluno.nome"></td>
+                                <td class="p-4"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold text-[10px]" x-text="aluno.curso"></span></td>
+                                <td class="p-4 font-mono text-blue-600" x-text="aluno.whatsapp"></td>
+                                <td class="p-4 font-bold text-emerald-600" x-text="aluno.valor"></td>
+                                <td class="p-4">
+                                    <span :class="aluno.pago ? 'bg-green-100 text-green-700' : 'bg-yellow-105 text-yellow-700'" 
+                                          class="px-2 py-1 rounded text-[10px] font-bold uppercase" 
+                                          x-text="aluno.pago ? 'Pago' : 'Pendente'"></span>
+                                </td>
+                                <td class="p-4">
+                                    <button @click="marcarPago(index)" class="text-green-600 hover:text-green-800 cursor-pointer"><i class="fas fa-check-circle"></i></button>
+                                    <button @click="removerInscrito(index)" class="text-red-500 ml-2 cursor-pointer"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="listaInscritos.length === 0">
+                            <tr>
+                                <td colspan="7" class="p-10 text-center text-gray-400 italic">Nenhuma inscrição registada até ao momento.</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer x-show="view === 'site'" class="bg-[#0a192f] text-white py-12">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
+            <div>
+                <img src="logo.png" alt="Logo" class="h-10 mb-6 mx-auto md:mx-0">
+                <p class="text-gray-400">Excelência em tecnologia e capacitação técnica para o mercado profissional em Angola.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-blue-400 tracking-widest">Contactos</h4>
+                <p class="text-gray-400">Luanda, Angola</p>
+                <p class="text-gray-400 font-mono">+244 953 646 352</p>
+                <p class="text-gray-400">jeootec@gmail.com</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-blue-400 tracking-widest">Redes Sociais</h4>
+                <div class="flex justify-center md:justify-start gap-6 text-2xl">
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/244953646352" class="hover:text-green-500 transition"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12 pt-8 border-t border-gray-800 text-gray-500 text-xs">
+            &copy; 2024 JEOOTEC - Soluções Tecnológicas. Profissionalizando Angola.
+        </div>
+    </footer>
+
+    <!-- NEW Floating Popup Notification with Neon Highlights -->
+    <div x-show="notifVisible"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="transform translate-y-12 opacity-0 scale-95"
+         x-transition:enter-end="transform translate-y-0 opacity-100 scale-100"
+         x-transition:exit="transition ease-in duration-300"
+         x-transition:exit-start="transform translate-y-0 opacity-100 scale-100"
+         x-transition:exit-end="transform translate-y-12 opacity-0 scale-95"
+         class="fixed bottom-6 left-6 z-50 p-4 rounded-xl bg-[#0a192f] border-l-4 border-cyan-400 shadow-[0_5px_20px_rgba(0,210,255,0.35)] flex items-center gap-3 text-white max-w-sm border border-cyan-500/20 neon-glow-cyan"
+         x-cloak>
+        <div class="w-10 h-10 bg-cyan-400 text-[#0a192f] rounded-full flex items-center justify-center shrink-0 text-lg shadow-[0_0_10px_rgba(0,210,255,0.5)]">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div>
+            <p class="text-xs text-slate-400 font-light">Nova Ficha Submetida!</p>
+            <p class="text-sm font-semibold text-slate-100">
+                <span x-text="currentNotifName" class="text-cyan-400 font-bold"></span> iniciou a inscrição no <span x-text="currentNotifCurso" class="text-white font-black uppercase text-xs"></span>.
+            </p>
+        </div>
+    </div>
+
+    <!-- NEW Floating WhatsApp Neon Support Chat Widget -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end" x-show="view === 'site'">
+        
+        <!-- Support Bubble Card -->
+        <div x-show="chatOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="transform scale-90 translate-y-10 opacity-0"
+             x-transition:enter-end="transform scale-100 translate-y-0 opacity-100"
+             x-transition:exit="transition ease-in duration-200"
+             x-transition:exit-start="transform scale-100 translate-y-0 opacity-100"
+             x-transition:exit-end="transform scale-90 translate-y-10 opacity-0"
+             class="bg-[#0b141a] text-white rounded-2xl w-80 shadow-[0_10px_35px_rgba(16,185,129,0.3)] border border-emerald-500/20 mb-4 p-4 neon-glow-green overflow-hidden text-left"
+             x-cloak>
+            
+            <!-- Chat Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                <div class="flex items-center gap-2.5">
+                    <div class="relative">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#0b141a] rounded-full"></span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-extrabold text-slate-100">Suporte JEOOTEC</h4>
+                        <p class="text-[9px] text-emerald-400 flex items-center gap-1">
+                             Online e pronto a ajudar
+                        </p>
+                    </div>
+                </div>
+                <button type="button" @click="chatOpen = false" class="text-slate-400 hover:text-white transition">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            </div>
+            
+            <!-- Chat Body -->
+            <div class="py-3 text-xs leading-relaxed text-slate-300">
+                Olá! Tem alguma dúvida sobre as nossas formações, certificados ou IBANs de pagamento? Escreva aqui abaixo para ser encaminhado diretamente ao nosso WhatsApp!
+            </div>
+            
+            <!-- Chat Form -->
+            <form @submit.prevent="sendFloatingMessage()" class="space-y-2">
+                <textarea x-model="chatMessage" placeholder="Escreva a sua dúvida..." 
+                          class="w-full bg-[#111d25] border border-emerald-500/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-405/50 focus:ring-1 focus:ring-emerald-400/20 resize-none h-16"></textarea>
+                <button type="submit" 
+                        class="w-full bg-[#128c7e] hover:bg-[#075e54] text-white py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-[0_0_10px_rgba(18,140,126,0.3)] cursor-pointer">
+                    <i class="fab fa-whatsapp"></i> Iniciar Chat no WhatsApp
+                </button>
+            </form>
+        </div>
+
+        <!-- Trigger Button -->
+        <button @click="chatOpen = !chatOpen" 
+                class="w-14 h-14 bg-[#25d366] text-white rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(37,211,102,0.4)] hover:scale-105 transition-all outline-none border border-emerald-400/30 neon-pulse-green relative"
+                title="Dúvidas? Fale Connosco!">
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-md animate-bounce">1</span>
+        </button>
+        
+    </div>
+
+    <!-- SCRIPT DE INICIALIZAÇÃO DO ALPINE APP -->
+    <script>
+        function jeootecApp() {
+            return {
+                view: 'site',
+                menuMobile: false,
+                modalInscricao: false,
+                modalDetails: false,
+                selectedCurso: {},
+                listaInscritos: [],
+                formData: { 
+                    nome: '', whatsapp: '', email: '', situacao: 'Desempregado', 
+                    profissao: '', modalidade: 'Utilizador' 
+                },
+
+                // Real-time automatic notifications states
+                notifVisible: false,
+                currentNotifName: '',
+                currentNotifCurso: '',
+                listNomesAngolanos: [
+                  "João Manuel",
+                  "José Sorte Francisco",
+                  "Pedro António",
+                  "Marta Domingos",
+                  "Ana Paula Mateus",
+                  "Carlos Manuel",
+                  "Edna Sofia",
+                  "Nelson Pedro",
+                  "Domingos Joaquim",
+                  "Maria da Conceição",
+                  "Mateus Francisco",
+                  "Elisa Bernardo",
+                  "António Domingos",
+                  "Patrícia Pedro",
+                  "Celso Manuel"
+                ],
+
+                // Chat states
+                chatOpen: false,
+                chatMessage: '',
+
+                // FAQ status
+                faqExpanded: null,
+                faqsData: [
+                  {
+                    pergunta: "Como funcionam os cursos de softwares de faturação?",
+                    resposta: "Os nossos cursos são 100% focados no ambiente de trabalho prático angolano. Aprenderá como realizar o licenciamento de softwares, configuração inicial de empresas, emissão de faturas/recibos, notas de crédito, relatórios fiscais, e parametrizações complexas exigidas pela AGT."
+                  },
+                  {
+                    pergunta: "Como posso assegurar a minha inscrição e onde recebo o IBAN?",
+                    resposta: "A inscrição inicial é feita diretamente aqui pelo site. Após preencher a ficha de inscrição correspondente ao curso, clique no botão para submeter e será direcionado para o nosso WhatsApp. O nosso IBAN oficial será transmitido e validado diretamente por lá para sua total segurança."
+                  },
+                  {
+                    pergunta: "As formações oferecem certificado profissional?",
+                    resposta: "Sim. Todos os alunos inscritos que concluírem as etapas e testes práticos com aproveitamento recebem um Certificado Profissional de Capacitação em Softwares de Gestão emitido pela JEOOTEC, altamente valorizado pelas empresas em Angola."
+                  },
+                  {
+                    pergunta: "Quais as facilidades de pagamento aceites?",
+                    resposta: "Aceitamos pagamentos por transferência bancária direta, depósitos ou Multicaixa Express. Em formações de maior duração ou na modalidade Profissional, o pagamento pode ser efetuado na confirmação para garantir a sua vaga na turma presencial."
+                  },
+                  {
+                    pergunta: "Quais são as opções de horários e qual a carga horária?",
+                    resposta: "Temos turmas flexíveis no período da Manhã (09h - 13h ou 10h - 13h), Tarde (14h - 18h ou 12h - 15h) e Sábados Intensivos para acomodar a sua agenda atual de trabalho ou estudos."
+                  },
+                  {
+                    pergunta: "Terei suporte técnico após a conclusão do curso?",
+                    resposta: "Sim, sem dúvida! Ficará integrado num grupo exclusivo de antigos alunos e técnicos especializados da JEOOTEC, onde poderá tirar dúvidas reais de instalações, resolver problemas técnicos de clientes e receber mentorias contínuas."
+                  },
+                  {
+                    pergunta: "As aulas são predominantemente práticas?",
+                    resposta: "Certamente. A JEOOTEC orgulha-se de usar a metodologia 'Mãos na Massa'. Treina diretamente nos sistemas, simula casos reais de empresas parceiras e simula a resolução de erros e auditorias normais à gestão de faturas."
+                  },
+                  {
+                    pergunta: "Preciso de requisitos específicos para começar?",
+                    resposta: "Apenas necessita de domínio elementar de informática ótica do utilizador (saber mexer no computador e ambiente de trabalho Windows). Noções de contabilidade são úteis, mas não obrigatórias – ensinamos tudo passo-a-passo até ao nível técnico."
+                  }
+                ],
+
+                cursos: [
+                    {
+                        id: 1,
+                        nome: 'SOFTWARE XD',
+                        imagem: 'xd.png',
+                        descricao: 'Software utilizado por empresas dos sectores de restauração, comércio e oficinas. Controle vendas e faturação.',
+                        modulosDisponiveis: 'Restauração, Faturação, Oficina',
+                        preco: '25.000',
+                        precoNum: 25000,
+                        vagas: 8,
+                        horario: 'Manhã (09h - 13h)',
+                        estado: '✓ Inscrições Abertas',
+                        empresas: 'Restaurantes, Lojas de Retalho, Oficinas de Automóveis.'
+                    },
+                    {
+                        id: 2,
+                        nome: 'SOFTWARE NEGOMIL',
+                        imagem: 'negomil.png',
+                        descricao: 'Solução moderna para gestão de vendas, faturação e controlo operacional hoteleiro.',
+                        modulosDisponiveis: 'Restauração, Faturação, Hoteleiro',
+                        preco: '30.000',
+                        precoNum: 30000,
+                        vagas: 5,
+                        horario: 'Tarde (14h - 18h)',
+                        estado: '✓ Últimas Vagas',
+                        empresas: 'Hotéis, Resorts, Pensões, Grandes Restaurantes.'
+                    },
+                    {
+                        id: 3,
+                        nome: 'SOFTWARE PRIMAVERA',
+                        imagem: 'primavera.png',
+                        descricao: 'Líder de mercado em gestão financeira, recursos humanos e contabilidade.',
+                        modulosDisponiveis: 'Contabilidade, RH, Faturação',
+                        preco: '45.000',
+                        precoNum: 45000,
+                        vagas: 12,
+                        horario: 'Sábados Intensivo',
+                        estado: '✓ Nova Turma em Breve',
+                        empresas: 'Grandes Empresas, Escritórios de Contabilidade, Bancos.'
+                    },
+                    {
+                        id: 4,
+                        nome: 'SOFTWARE VENDUS',
+                        imagem: 'vendus.png',
+                        descricao: 'Interface baseada em nuvem, robusto e flexível para faturação rápida com conformidade da AGT.',
+                        modulosDisponiveis: 'Faturação, Clientes, Inventário',
+                        preco: '25.000',
+                        precoNum: 25000,
+                        vagas: 0,
+                        horario: 'Manhã (10h - 13h)',
+                        estado: 'ESGOTADO',
+                        empresas: 'Supermercados, Minimercados, Clínicas, Lojas e Quiosques.'
+                    },
+                    {
+                        id: 5,
+                        nome: 'SOFTWARE SERGEST',
+                        imagem: 'sergest.png',
+                        descricao: 'Instalação, parametrização avançada e controle de stocks de um dos softwares nacionais de faturação mais requisitados.',
+                        modulosDisponiveis: 'Vendas, Stocks, Faturação Comercial',
+                        preco: '35.000',
+                        precoNum: 35000,
+                        vagas: 0,
+                        horario: 'Manhã (10h - 13h)',
+                        estado: 'ESGOTADO',
+                        empresas: 'Armazéns grossistas, Farmácias, Comercio Geral de Mercadorias.'
+                    },
+                    {
+                        id: 6,
+                        nome: 'SOFTWARE SERGEST PRO',
+                        imagem: 'sergest.png',
+                        descricao: 'Parametrização avançada, configuração de bases de dados locais e conexões multi-caixa certificadas.',
+                        modulosDisponiveis: 'Bases de Dados, Redes, Gestão de Caixas',
+                        preco: '35.000',
+                        precoNum: 35000,
+                        vagas: 0,
+                        horario: 'Manhã (10h - 13h)',
+                        estado: 'ESGOTADO',
+                        empresas: 'Escritórios de Contabilidade, Consultorias de Soluções de Redes.'
+                    },
+                    {
+                        id: 7,
+                        nome: 'SOFTWARE TRUNFO',
+                        imagem: 'trunfo.png',
+                        descricao: 'Um software clássico de confiança para empresas de logística e grandes faturadores nacionais.',
+                        modulosDisponiveis: 'Logística, Orçamentações, Tesouraria',
+                        preco: '38.000',
+                        precoNum: 38000,
+                        vagas: 0,
+                        horario: 'Tarde (12h - 15h)',
+                        estado: 'ESGOTADO',
+                        empresas: 'Prestadores de Serviços Oficiais, Construtoras, Empresas de Mudanças.'
+                    },
+                    {
+                        id: 8,
+                        nome: 'SOFTWARE KWANZAGEST',
+                        imagem: 'kwanzagest.png',
+                        descricao: 'Fácil, rápido e amplamente popular. Ideal para gestão rápida de balcão e pequenas redes comerciais de comércio varejista.',
+                        modulosDisponiveis: 'Caixa Rápido, Faturas Simplificadas, Relatórios',
+                        preco: '28.000',
+                        precoNum: 28000,
+                        vagas: 0,
+                        horario: 'Tarde (12h - 15h)',
+                        estado: 'ESGOTADO',
+                        empresas: 'Salões de Beleza, Boutiques, Pastelarias, Minimercados locais.'
+                    }
+                ],
+
+                calcularPreco() {
+                    if (!this.selectedCurso.precoNum) return 0;
+                    return this.formData.modalidade === 'Profissional' 
+                        ? this.selectedCurso.precoNum * 1.5 
+                        : this.selectedCurso.precoNum;
+                },
+
+                formatarDinheiro(v) {
+                    return v.toLocaleString('pt-AO') + ' Kz';
+                },
+
+                acessoAdmin() {
+                    let senha = prompt("Introduza a senha de Administrador JEOOTEC:");
+                    if (senha === "jeootec2024") {
+                        this.view = 'admin';
+                        this.carregarInscritos();
+                    } else {
+                        alert("Senha incorreta!");
+                    }
+                },
+
+                openDetails(curso) {
+                    this.selectedCurso = { ...curso };
+                    this.modalDetails = true;
+                },
+
+                openInscricao(curso) {
+                    this.selectedCurso = { ...curso };
+                    this.formData = { 
+                        nome: '', whatsapp: '', email: '', situacao: 'Desempregado', 
+                        profissao: '', modalidade: 'Utilizador' 
+                    };
+                    this.modalInscricao = true;
+                },
+
+                getStatusClass(estado) {
+                    if (estado.includes('Abertas')) return 'bg-green-600';
+                    if (estado.includes('Vagas')) return 'bg-orange-500';
+                    if (estado.includes('ESGOTADO') || estado.includes('Esgotado')) return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
+                    return 'bg-blue-500';
+                },
+
+                carregarInscritos() {
+                    const dados = localStorage.getItem('jeootec_inscritos');
+                    this.listaInscritos = dados ? JSON.parse(dados) : [];
+                },
+
+                submitInscricao() {
+                    const precoFinal = this.calcularPreco();
+                    
+                    // Salvar no painel interno
+                    const novaInscricao = {
+                        data: new Date().toLocaleDateString('pt-PT'),
+                        nome: this.formData.nome,
+                        curso: this.selectedCurso.nome,
+                        whatsapp: this.formData.whatsapp,
+                        valor: this.formatarDinheiro(precoFinal),
+                        pago: false
+                    };
+                    
+                    this.listaInscritos.unshift(novaInscricao);
+                    localStorage.setItem('jeootec_inscritos', JSON.stringify(this.listaInscritos));
+
+                    // Enviar para WhatsApp
+                    const msg = `Olá JEOOTEC! 🚀\n\n*FICHA DE INSCRIÇÃO*\n*Nome:* ${this.formData.nome}\n*Curso:* ${this.selectedCurso.nome}\n*WhatsApp:* ${this.formData.whatsapp}\n*Investimento:* ${this.formatarDinheiro(precoFinal)}\n*Modalidade:* ${this.formData.modalidade === 'Profissional' ? 'Profissional Completa' : 'Apenas Utilizador'}\n--------------------------\nAguardando IBAN para pagamento.`;
+                    window.open(`https://api.whatsapp.com/send?phone=244953646352&text=${encodeURIComponent(msg)}`, '_blank');
+                    
+                    this.modalInscricao = false;
+                    alert("Inscrição registada no sistema JEOOTEC! Por favor, conclua o envio no WhatsApp.");
+                },
+
+                marcarPago(idx) {
+                    this.listaInscritos[idx].pago = !this.listaInscritos[idx].pago;
+                    localStorage.setItem('jeootec_inscritos', JSON.stringify(this.listaInscritos));
+                },
+
+                removerInscrito(idx) {
+                    if(confirm("Deseja remover este inscrito permanentemente?")) {
+                        this.listaInscritos.splice(idx, 1);
+                        localStorage.setItem('jeootec_inscritos', JSON.stringify(this.listaInscritos));
+                    }
+                },
+
+                // Simulated automated notification trigger logic
+                triggerNotification() {
+                    const randomIndexName = Math.floor(Math.random() * this.listNomesAngolanos.length);
+                    const cursosNomes = this.cursos.map(c => c.nome);
+                    const randomIndexCurso = Math.floor(Math.random() * cursosNomes.length);
+                    
+                    this.currentNotifName = this.listNomesAngolanos[randomIndexName];
+                    this.currentNotifCurso = cursosNomes[randomIndexCurso];
+                    this.notifVisible = true;
+                    
+                    setTimeout(() => {
+                        this.notifVisible = false;
+                    }, 8000);
+                },
+
+                iniciarNotificacoes() {
+                    // Trigger first notification after 5 seconds to greet
+                    setTimeout(() => {
+                        this.triggerNotification();
+                    }, 5000);
+                    
+                    // Trigger every 1 minute as requested
+                    setInterval(() => {
+                        this.triggerNotification();
+                    }, 60000);
+                },
+
+                // WhatsApp Floating Message handler
+                sendFloatingMessage() {
+                    if (!this.chatMessage.trim()) return;
+                    const msg = `Olá JEOOTEC! 😊\nTenho uma dúvida:\n${this.chatMessage}`;
+                    window.open(`https://api.whatsapp.com/send?phone=244953646352&text=${encodeURIComponent(msg)}`, '_blank');
+                    this.chatMessage = '';
+                    this.chatOpen = false;
+                }
+            }
+        }
+    </script>
 </body>
 </html>
