@@ -62,6 +62,13 @@
                 box-shadow: 0 0 20px rgba(16, 185, 129, 0.9);
             }
         }
+        .animate-pulse-slow {
+            animation: pulseSlow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 0.25; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.05); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans overflow-x-hidden" x-data="jeootecApp()">
@@ -84,11 +91,19 @@
                 </button>
             </div>
         </div>
-        <!-- Dropdown Mobile -->
-        <div x-show="menuMobile" @click.outside="menuMobile = false" class="md:hidden bg-white border-t p-4 flex flex-col space-y-4 font-semibold" x-cloak>
-            <a href="#home" @click="menuMobile = false">Início</a>
-            <a href="#cursos" @click="menuMobile = false">Formações</a>
-            <a href="#" @click="acessoAdmin(); menuMobile = false">Painel Admin</a>
+        <!-- Dropdown Mobile (Com animação suave do menu Sergest) -->
+        <div x-show="menuMobile" 
+             x-transition:enter="transition ease-out duration-300 transform" 
+             x-transition:enter-start="opacity-0 -translate-y-4" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             x-transition:leave="transition ease-in duration-200 transform" 
+             x-transition:leave-start="opacity-100 translate-y-0" 
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             @click.outside="menuMobile = false" 
+             class="md:hidden bg-white border-t p-4 flex flex-col space-y-4 font-semibold shadow-inner" x-cloak>
+            <a href="#home" @click="menuMobile = false" class="hover:text-blue-600 transition">Início</a>
+            <a href="#cursos" @click="menuMobile = false" class="hover:text-blue-600 transition">Formações</a>
+            <a href="#" @click="acessoAdmin(); menuMobile = false" class="hover:text-blue-600 transition">Painel Admin</a>
         </div>
     </nav>
 
@@ -129,7 +144,7 @@
                     <div class="text-lg text-gray-600 space-y-4 leading-relaxed italic">
                         <p>
                             Olá, sou o fundador da JEOOTEC. Antes de abrir as portas deste centro de formação, eu já estava no terreno, resolvendo os problemas que as empresas enfrentam diariamente. É fundamental que saibas: a JEOOTEC não é apenas uma escola; somos uma empresa de tecnologia activa que implementa, configura e dá suporte real a dezenas de negócios em Angola.
-Ao longo da minha trajetória, tive a responsabilidade de prestar services críticos e instalar sistemas de gestão em grandes players do mercado,como Arcaviva, Grupo Dezema, Grupo ALCA e Organizações Santos Bikukus. e diversas outras instituições de renome nacional. Foi lá, no "calor da operação", que entendi o que separa um utilizador comum de um técnico de elite.
+Ao longo da minha trajetória, tive a responsabilidade de prestar serviços críticos e instalar sistemas de gestão em grandes players do mercado,como Arcaviva, Grupo Dezema, Grupo ALCA e Organizações Santos Bikukus. e diversas outras instituições de renome nacional. Foi lá, no "calor da operação", que entendi o que separa um utilizador comum de um técnico de elite.
 A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-how' que eu utilizo para prestar consultoria. Aqui, não aprendes apenas a 'clicar em botões'; aprendes a lógica técnica, a instalação do zero, a configuração avançada e a estratégia de venda da solução. Tu não sairás daqui apenas com um certificado, mas sim com a habilidade que as empresas mais disputam e melhor pagam atualmente no nosso país. Prepara-te para uma carreira de sucesso com retorno financeiro imediato.
                         </p>
                     </div>
@@ -217,19 +232,32 @@ A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-h
             </div>
         </section>
 
-        <!-- SECÇÃO TESTEMUNHOS (NOVA SECÇÃO ESTRATÉGICA) -->
-        <section id="testemunhos" class="py-20 bg-slate-50 border-t border-b border-gray-100">
-            <div class="container mx-auto px-6">
+        <!-- SECÇÃO TESTEMUNHOS (NOVA ESTRUTURA COM SLIDER RESPONSIVO E CÍRCULOS CONCÊNTRICOS) -->
+        <section id="testemunhos" class="py-20 bg-slate-50 border-t border-b border-gray-100 relative overflow-hidden">
+            <!-- Concentric Circles Background (Copiado fielmente do vídeo do Sergest) -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center z-0">
+                <svg class="w-[600px] h-[600px] text-cyan-400/20 opacity-30 animate-pulse-slow" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="0.3">
+                    <circle cx="50" cy="50" r="10" />
+                    <circle cx="50" cy="50" r="18" />
+                    <circle cx="50" cy="50" r="26" />
+                    <circle cx="50" cy="50" r="34" />
+                    <circle cx="50" cy="50" r="42" />
+                    <circle cx="50" cy="50" r="50" />
+                </svg>
+            </div>
+
+            <div class="container mx-auto px-6 relative z-10">
                 <div class="text-center max-w-3xl mx-auto mb-16">
                     <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
                         Descubra o que nossos clientes têm a dizer.
                     </h2>
                     <p class="text-cyan-500 font-extrabold uppercase tracking-widest text-xs flex items-center justify-center gap-2">
-                        <span class="w-8 h-0.5 bg-cyan-400"></span> Experiências que inspiram sucesso <span class="w-8 h-0.5 bg-cyan-400"></span>
+                        <i class="fas fa-quote-left text-[9px] opacity-70"></i> Experiências que inspiram sucesso <i class="fas fa-quote-right text-[9px] opacity-70"></i>
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- DESKTOP VIEW: Grade Estática de 3 Colunas (Lindo e fluído para telas maiores) -->
+                <div class="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- CARD 1 -->
                     <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] card-hover flex flex-col items-center text-center">
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150" alt="Adilson Manuel" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
@@ -332,6 +360,149 @@ A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-h
                         </div>
                     </div>
                 </div>
+
+                <!-- MOBILE VIEW: SLIDER INTERATIVO COM ALPINE (Exatamente igual ao exibido no celular no vídeo do Sergest!) -->
+                <div class="block md:hidden max-w-sm mx-auto" x-data="{ activeSlide: 0 }">
+                    <div class="relative overflow-hidden h-[390px] sm:h-[350px]">
+                        
+                        <!-- SLIDE 1 -->
+                        <div x-show="activeSlide === 0" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150" alt="Adilson Manuel" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Adilson Manuel</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">DG, Dissabi</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "Desde que começamos a usar este software de faturação, nossa empresa viu uma melhoria significativa na precisão e eficiência do processo de faturamento. Altamente recomendado!"
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 2 -->
+                        <div x-show="activeSlide === 1" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" x-cloak>
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="Patrício Vieira" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Patrício Vieira</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">CEO, PV Prudencia</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "Este software de faturação simplificou nossas operações financeiras, permitindo-nos concentrar mais tempo em outras áreas do nosso negócio. Ótima solução!"
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 3 -->
+                        <div x-show="activeSlide === 2" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" x-cloak>
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150" alt="Alfredo Luemba" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Alfredo Luemba</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">Founder</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "Estou impressionado com a facilidade de uso deste software de faturação. Mesmo sem experiência prévia em contabilidade, consegui dominá-lo rapidamente e agora economizo horas no faturamento mensal."
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 4 -->
+                        <div x-show="activeSlide === 3" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" x-cloak>
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150&h=150" alt="Maria Mateus" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Maria Mateus</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">Gerente, SERMAR</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "O suporte técnico deste software de faturação é excepcional. Sempre que tive alguma dúvida ou resolver qualquer questão, a equipe de suporte foi rápida em responder e resolver qualquer questão, garantindo que nossa operação nunca fosse interrompida. Uma verdadeira parceria!"
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 5 -->
+                        <div x-show="activeSlide === 4" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" x-cloak>
+                            <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&q=80&w=150&h=150" alt="Panda Gomes" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Panda Gomes</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">CEO - ITS RYUT</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "Este software de faturação mudou a forma como gerenciamos nossas finanças. A automação de tarefas repetitivas e os relatórios detalhados nos ajudaram a tomar decisões mais informadas e a impulsionar o crescimento do nosso negócio."
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 6 -->
+                        <div x-show="activeSlide === 5" 
+                             x-transition:enter="transition ease-out duration-300 transform" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute inset-0 bg-white rounded-2xl p-6 border border-gray-150 shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" x-cloak>
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" alt="Marlene Silva" class="w-16 h-16 rounded-full object-cover border-2 border-cyan-400 p-0.5 mb-4">
+                            <h3 class="font-bold text-lg text-slate-900">Marlene Silva</h3>
+                            <p class="text-xs text-slate-400 font-semibold mb-3 uppercase tracking-wider">Gerente - Dream Trip</p>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic mb-4">
+                                "Como proprietário de uma pequena empresa, encontrar um software de faturamento acessível e confiável foi crucial. Este software não só se encaixou no nosso orçamento, mas também superou nossas expectativas em termos de funcionalidade e suporte ao cliente."
+                            </p>
+                            <div class="flex gap-1 mt-auto text-amber-500">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs text-slate-200"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Dots de Navegação do Carrossel Mobile -->
+                    <div class="flex justify-center gap-2 mt-4">
+                        <template x-for="i in [0, 1, 2, 3, 4, 5]" :key="i">
+                            <button @click="activeSlide = i" 
+                                    :class="activeSlide === i ? 'bg-cyan-500 w-6' : 'bg-gray-300 w-2'" 
+                                    class="h-2 rounded-full transition-all duration-300"></button>
+                        </template>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -371,7 +542,7 @@ A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-h
     <!-- MODAL: FORMULÁRIO DE INSCRIÇÃO COM PREÇO DINÂMICO -->
     <div x-show="modalInscricao" class="fixed inset-0 z-[60] flex items-start md:items-center justify-center p-4 md:p-6 bg-black/80 overflow-y-auto" x-cloak>
         <div class="bg-white rounded-2xl max-w-4xl w-full p-6 md:p-8 relative my-auto">
-            <button @click.stop="modalInscricao = false" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-red-500 transition cursor-pointer p-2 z-20" aria-label="Fechar">&times;</button>
+            <button @click.stop="modalInscricao = false" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-red-500 transition cursor-pointer p-2 z-50" aria-label="Fechar">&times;</button>
             
             <h2 class="text-2xl font-bold text-center mb-8 text-blue-900 border-b pb-4">Inscrição Profissional JEOOTEC</h2>
             
@@ -572,7 +743,7 @@ A minha missão é pegar na tua vontade de crescer e entregar-te o exato 'know-h
         </button>
     </div>
 
-    <!-- NEW DIRECT WHATSAPP SUPPORT CHAT LINK (SUA SOLICITAÇÃO DE REMOÇÃO DO CHAT CHATO) -->
+    <!-- NEW DIRECT WHATSAPP SUPPORT CHAT LINK -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end" x-show="view === 'site'">
         <!-- Trigger Button: Abre o chat diretamente no app do WhatsApp -->
         <a href="https://wa.me/244953646352" 
